@@ -1,5 +1,5 @@
-#ifndef __VECTOR_H
-#define __VECTOR_H
+#ifndef __VECTOR_H_
+#define __VECTOR_H_
 
 //#include <math>
 
@@ -14,3 +14,4 @@ public:
 	double getVectorZ(){ return z; }
 };
 #endif
+

@@ -13,3 +13,4 @@ Vector::Vector(double x, double y, double z){
 	this->y = y;
 	this->z = z;
 }
+
