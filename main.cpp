@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "Vector.h"
+
 using namespace std;
 
 struct RGBType{
@@ -77,7 +79,7 @@ void savebmp(const char *filename, int w, int h, int dpi, RGBType *data){
 	fclose(f);
 }
 
-int thisone;
+
 
 int main(int argv, char *argc[]){
 
@@ -87,6 +89,7 @@ int main(int argv, char *argc[]){
 	int height = 480;
 	int n = width * height;
 	RGBType *pixels = new RGBType[n];
+	int thisone;
 
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
