@@ -11,6 +11,10 @@
 #include <time.h>
 
 #include "Vector.h"
+#include "Ray.h"
+#include "Camera.h"
+#include "Color.h"
+#include "Light.h"
 
 using namespace std;
 
@@ -90,6 +94,27 @@ int main(int argv, char *argc[]){
 	int n = width * height;
 	RGBType *pixels = new RGBType[n];
 	int thisone;
+
+
+	Vector X (1,0,0);
+	Vector Y (0,1,0);
+	Vector Z (0,0,1);
+
+	Vector camPos (3,1.5, -4);
+	Vector lookAt (0,0,0);
+	Vector diff_btw(camPos.getVectorX() - lookAt.getVectorX(), camPos.getVectorY() - lookAt.getVectorY(),camPos.getVectorZ() - lookAt.getVectorZ());
+	Vector camDir = diff_btw.negative().normalize();
+	Vector camRight = Y.cross(camDir).normalize();
+	Vector camDown = camRight.cross(camDir);
+	Camera scaneCam (camPos, camDir, camRight, camDown);
+
+	Color whiteLight (1.0, 1.0, 1.0, 0.0);
+	Color prettyGreen (0.5, 1.0, 0.5, 0.3);
+	Color gray (0.5, 0.5, 0.5, 0.0);
+	Color back (0.0, 0.0, 0.0, 0.0);
+
+	Vector lightPosition (-7, 10, -10);
+	Light sceneLight (lightPosition, whiteLight);
 
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
