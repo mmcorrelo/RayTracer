@@ -5,3 +5,6 @@ In this project will be contemplated topics such as:
 - Reflections
 - Refractions
  and more things I remember to add :p
+
+For any reason needs to contact me, you cant to correlomm at gmail dot com
+
