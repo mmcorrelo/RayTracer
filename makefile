@@ -20,4 +20,4 @@ main.o: main.cpp
 #	g++ -c factorial.cpp
 
 clean:
-	rm -rf *o $(PROG)
+	rm -rf *o *.bmp $(PROG)
