@@ -15,7 +15,9 @@
 #include "Camera.h"
 #include "Color.h"
 #include "Light.h"
+#include "Object.h"
 #include "Sphere.h"
+#include "Plane.h"
 
 using namespace std;
 
@@ -96,7 +98,7 @@ int main(int argv, char *argc[]){
 	RGBType *pixels = new RGBType[n];
 	int thisone;
 
-
+	Vector O (0,0,0);
 	Vector X (1,0,0);
 	Vector Y (0,1,0);
 	Vector Z (0,0,1);
@@ -114,8 +116,12 @@ int main(int argv, char *argc[]){
 	Color gray (0.5, 0.5, 0.5, 0.0);
 	Color back (0.0, 0.0, 0.0, 0.0);
 
+
 	Vector lightPosition (-7, 10, -10);
 	Light sceneLight (lightPosition, whiteLight);
+
+	//scene objects
+	Sphere sphere(O, 1, prettyGreen);
 
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
