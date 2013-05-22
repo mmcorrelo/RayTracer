@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Color.h"
 #include "Light.h"
+#include "Sphere.h"
 
 using namespace std;
 

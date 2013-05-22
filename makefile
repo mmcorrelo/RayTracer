@@ -1,8 +1,11 @@
+#AUTHOR: Miguel Correlo
+#EMAIL: correlomm at gmail com	
+	
 CC = g++
 CFLAGS = 
 LDFLAGS = 
-LIBS = Light.o Color.o Camera.o Vector.o Ray.o main.o
-HEADERS = Light.h Color.h Vector.h Ray.h Camera.h 
+LIBS = Sphere.o Light.o Color.o Camera.o Vector.o Ray.o main.o
+HEADERS = Sphere.h Light.h Color.h Vector.h Ray.h Camera.h 
 PROG = raytracer
 
 all: $(LIBS) 
@@ -25,6 +28,9 @@ Color.o:  Color.cpp Color.h
 
 Light.o:  Vector.o Color.o Light.cpp Light.h 
 						${CC} ${CFLAGS} -c Light.cpp
+
+Sphere.o:  Vector.o Color.o Sphere.cpp Sphere.h 
+						${CC} ${CFLAGS} -c Sphere.cpp
 
 clean:
 	rm -rf *o *.bmp $(PROG)
