@@ -1,6 +1,5 @@
 #AUTHOR: Miguel Correlo
 #EMAIL: correlomm at gmail com	
-	
 CC = g++
 CFLAGS = 
 LDFLAGS = 
