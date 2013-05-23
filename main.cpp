@@ -97,7 +97,10 @@ int main(int argv, char *argc[]){
 	int n = width * height;
 	RGBType *pixels = new RGBType[n];
 	int thisone;
+	double xamnt, yamnt; 
+	double aspectRatio = (double) width / (double) height;
 
+	
 	Vector O (0,0,0);
 	Vector X (1,0,0);
 	Vector Y (0,1,0);
@@ -127,6 +130,27 @@ int main(int argv, char *argc[]){
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
 			thisone = y * width + x;
+
+			//start with anti-aliasing
+			if (width > height){
+				//the image is wider than it is all
+				xamnt = ((x+0.5)/width)*aspectRatio - (((width - height)/(double) height)/2);
+				yamnt =((height - y) + 0.5)/height;
+
+			}
+			else if (height > width){
+				//the image is taller than it is wide
+				xamnt = (x+ 0.5) / width;
+				yamnt = (((height - y) + 0.5)/height)/ aspectRatio - (((height - width)/ (double) width)/2);
+			}
+			else{
+				// the image is square
+				xamnt = (x + 0.5) / width;
+				yamnt = ((height - y) + 0.5)/height;
+			}
+
+
+
 			pixels[thisone].r = 23;
 			pixels[thisone].g = 222;
 			pixels[thisone].b = 10;
