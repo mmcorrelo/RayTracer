@@ -208,17 +208,20 @@ int main(int argv, char *argc[]){
 
 			std::vector<double> intersections;
 			//find instersection for each object scene
-			for (int index = 0; sceneObjects.size(); index++){
+			
+			for (int index = 0; index < sceneObjects.size(); index++){
 				intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
 			}
+
 			int indexOfWinningObject = winningObjectIndex(intersections);
 
-
+			cout << indexOfWinningObject;
+			
 			pixels[thisone].r = 23;
 			pixels[thisone].g = 222;
 			pixels[thisone].b = 10;
 		}
 	}
-	savebmp("scene.bmp", width, height, dpi, pixels);
+	//savebmp("scene.bmp", width, height, dpi, pixels);
 	return 0;
 }
