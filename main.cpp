@@ -115,13 +115,14 @@ int main(int argv, char *argc[]){
 	Color prettyGreen (0.5, 1.0, 0.5, 0.3);
 	Color gray (0.5, 0.5, 0.5, 0.0);
 	Color back (0.0, 0.0, 0.0, 0.0);
-
+	Color marron (0.5, 0.2, 0.25, 0.0);
 
 	Vector lightPosition (-7, 10, -10);
 	Light sceneLight (lightPosition, whiteLight);
 
 	//scene objects
 	Sphere sphere(O, 1, prettyGreen);
+	Plane plane(Y, -1.0, marron);
 
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){

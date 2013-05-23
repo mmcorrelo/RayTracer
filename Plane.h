@@ -18,6 +18,9 @@ public:
 	Vector getSphereNormal(){ return normal; }
 	double getSphereDistance(){ return distance; }
 	Color getPlaneColor(){ return color;}
+
+	Vector getNormalAt(Vector);
+	double findIntersection(Ray);
 };
 #endif
 
