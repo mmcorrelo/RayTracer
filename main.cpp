@@ -100,7 +100,7 @@ int main(int argv, char *argc[]){
 	double xamnt, yamnt; 
 	double aspectRatio = (double) width / (double) height;
 
-	
+
 	Vector O (0,0,0);
 	Vector X (1,0,0);
 	Vector Y (0,1,0);
@@ -127,6 +127,10 @@ int main(int argv, char *argc[]){
 	Sphere sphere(O, 1, prettyGreen);
 	Plane plane(Y, -1.0, marron);
 
+	std::vector<Object*> sceneObjects;
+	sceneObjects.push_back(dynamic_cast<Object*>(&sphere));
+	sceneObjects.push_back(dynamic_cast<Object*>(&plane));
+
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
 			thisone = y * width + x;
@@ -148,6 +152,13 @@ int main(int argv, char *argc[]){
 				xamnt = (x + 0.5) / width;
 				yamnt = ((height - y) + 0.5)/height;
 			}
+
+			Vector cameraRayOrigin = scaneCam.getCameraPosition();
+			Vector cameraRayDirection = camDir.add(camRight.mult(xamnt - 0.5).add(camDown.mult(yamnt- 0.5))).normalize();
+
+			Ray cameraRay(cameraRayOrigin, cameraRayDirection);
+
+			std::vector<double> intersections;
 
 
 
