@@ -86,7 +86,13 @@ void savebmp(const char *filename, int w, int h, int dpi, RGBType *data){
 	fclose(f);
 }
 
+int winningObjectIndex(std::vector<double> object_intersections){
+	// return the index of the winning intersection
+	int indexOfMinimumValue;
 
+	//prevent unnecessary calculations
+	
+}
 
 int main(int argv, char *argc[]){
 
@@ -163,7 +169,7 @@ int main(int argv, char *argc[]){
 			for (int index = 0; sceneObjects.size(); index++){
 				intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
 			}
-
+			int indexOfWinningObject = winningObjectIndex(intersections);
 
 
 			pixels[thisone].r = 23;
