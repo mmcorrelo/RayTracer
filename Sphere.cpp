@@ -12,6 +12,10 @@ Sphere::Sphere(Vector centerValue, double radiusValue, Color colorValue){
 	color = colorValue;
 }
 
+Color Sphere::getColor(){
+	return color;
+}
+
 Vector Sphere::getNormalAt(Vector point){
 	//normal always ponts away from the center of a sphere
 	Vector normalVector = point.add(center.negative()).normalize();

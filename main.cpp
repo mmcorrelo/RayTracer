@@ -215,13 +215,25 @@ int main(int argv, char *argc[]){
 
 			int indexOfWinningObject = winningObjectIndex(intersections);
 
-			cout << indexOfWinningObject;
+			if (indexOfWinningObject < 0.0){
+				//set background balck
+
+				pixels[thisone].r = 0.0;
+				pixels[thisone].g = 0.0;
+				pixels[thisone].b = 0.0;
+			}
+			else{
+				// index corresponds to bject in our scene
+				
+				Color currentColor = sceneObjects.at(indexOfWinningObject)->getColor();
+				pixels[thisone].r = currentColor.getColorRed();
+				pixels[thisone].g = currentColor.getColorGreen();
+				pixels[thisone].b = currentColor.getColorBlue();
+			}
 			
-			pixels[thisone].r = 23;
-			pixels[thisone].g = 222;
-			pixels[thisone].b = 10;
+			
 		}
 	}
-	//savebmp("scene.bmp", width, height, dpi, pixels);
+	savebmp("scene.bmp", width, height, dpi, pixels);
 	return 0;
 }

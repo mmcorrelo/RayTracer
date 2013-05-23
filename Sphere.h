@@ -17,10 +17,10 @@ public:
 
 	Vector getSphereCenter(){ return center; }
 	double getSphereRadius(){ return radius; }
-	Color getSphereColor(){ return color;}
+	virtual Color getColor();
 
 	double findIntersection(Ray);
-	Vector getNormalAt(Vector);
+	virtual Vector getNormalAt(Vector);
 };
 #endif
 

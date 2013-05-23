@@ -11,6 +11,10 @@ Plane::Plane(Vector normalValue, double distanceValue, Color colorValue){
 	color = colorValue;
 }
 
+Color Plane::getColor(){
+	return color;
+}
+
 Vector Plane::getNormalAt(Vector point){
 	return normal;
 }

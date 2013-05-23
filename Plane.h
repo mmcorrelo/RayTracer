@@ -17,10 +17,10 @@ public:
 
 	Vector getSphereNormal(){ return normal; }
 	double getSphereDistance(){ return distance; }
-	Color getPlaneColor(){ return color;}
+	virtual Color getColor();
 
 	Vector getNormalAt(Vector);
-	double findIntersection(Ray);
+	virtual double findIntersection(Ray);
 };
 #endif
 
