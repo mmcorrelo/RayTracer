@@ -91,7 +91,49 @@ int winningObjectIndex(std::vector<double> object_intersections){
 	int indexOfMinimumValue;
 
 	//prevent unnecessary calculations
-	
+	if (object_intersections.size() == 0){
+		// if there are no intersections
+		return -1;
+	}
+	else if (object_intersections.size() == 1){
+		if (object_intersections.at(0) > 0){
+			//if that instersection is grater than zero its our index of minimum value
+			return 0;
+		}
+		else{
+			//otherwise the only intersection is negative
+			return -1;
+		}
+	}
+	else{
+		// otherwise there is no more than one intersection
+		//first find the max value in vector
+
+		double max = 0;
+		for (int i; i < object_intersections.size(); i++){
+			if (max < object_intersections.at(i)){
+				max = object_intersections.at(i);
+			}
+		}
+
+		//then starting from the maximum value find the minimum positive value
+		if (max > 0){
+			// we only want positive intersections
+			for (int index = 0; index < object_intersections.size(); index++){
+				if (object_intersections.at(index) > 0 && object_intersections.at(index) <= max){
+					max = object_intersections.at(index);
+					indexOfMinimumValue = index;	
+				}
+			}
+
+			return indexOfMinimumValue;
+		}
+		else{
+			//all the instersections were negative
+			return -1;
+		}
+
+	}
 }
 
 int main(int argv, char *argc[]){
