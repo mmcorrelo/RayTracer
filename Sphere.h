@@ -18,6 +18,9 @@ public:
 	Vector getSphereCenter(){ return center; }
 	double getSphereRadius(){ return radius; }
 	Color getSphereColor(){ return color;}
+
+	double findIntersection(Ray);
+	Vector getNormalAt(Vector);
 };
 #endif
 

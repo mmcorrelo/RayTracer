@@ -159,6 +159,10 @@ int main(int argv, char *argc[]){
 			Ray cameraRay(cameraRayOrigin, cameraRayDirection);
 
 			std::vector<double> intersections;
+			//find instersection for each object scene
+			for (int index = 0; sceneObjects.size(); index++){
+				intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
+			}
 
 
 
