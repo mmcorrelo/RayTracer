@@ -14,6 +14,7 @@
 #include "Ray.h"
 #include "Camera.h"
 #include "Color.h"
+#include "Source.h"
 #include "Light.h"
 #include "Object.h"
 #include "Sphere.h"
@@ -136,6 +137,10 @@ int winningObjectIndex(std::vector<double> object_intersections){
 	}
 }
 
+Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, std::vector<Object*> sceneObjects, int indexOfWinningObject, std::vector<Source*> lightSources, double accuracy, double ambientLight){
+	return Color(1,1,1,0);
+}
+
 int main(int argv, char *argc[]){
 
 	cout << "rendering ..." << endl;
@@ -147,6 +152,8 @@ int main(int argv, char *argc[]){
 	int thisone;
 	double xamnt, yamnt; 
 	double aspectRatio = (double) width / (double) height;
+	double ambientLight = 0.2;
+	double accuracy = 0.000001;
 
 
 	Vector O (0,0,0);
@@ -171,6 +178,9 @@ int main(int argv, char *argc[]){
 	Vector lightPosition (-7, 10, -10);
 	Light sceneLight (lightPosition, whiteLight);
 
+	std::vector<Source*> lightSources;
+	lightSources.push_back(dynamic_cast<Source*>(&sceneLight));
+
 	//scene objects
 	Sphere sphere(O, 1, prettyGreen);
 	Plane plane(Y, -1.0, marron);
@@ -178,6 +188,8 @@ int main(int argv, char *argc[]){
 	std::vector<Object*> sceneObjects;
 	sceneObjects.push_back(dynamic_cast<Object*>(&sphere));
 	sceneObjects.push_back(dynamic_cast<Object*>(&plane));
+
+
 
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
@@ -224,11 +236,21 @@ int main(int argv, char *argc[]){
 			}
 			else{
 				// index corresponds to bject in our scene
-				
-				Color currentColor = sceneObjects.at(indexOfWinningObject)->getColor();
-				pixels[thisone].r = currentColor.getColorRed();
-				pixels[thisone].g = currentColor.getColorGreen();
-				pixels[thisone].b = currentColor.getColorBlue();
+				if (intersections.at(indexOfWinningObject) > accuracy){
+					//determine the position and direction vectors at the point of intersection
+					
+					Vector intersectionPosition = cameraRayOrigin.add(cameraRayDirection.mult(intersections.at(indexOfWinningObject)));
+					Vector intersectionRayDirection = cameraRayDirection;
+
+					Color intersectionColor = getColorAt(intersectionPosition, intersectionRayDirection, sceneObjects, indexOfWinningObject, lightSources, accuracy, ambientLight);
+
+					pixels[thisone].r = intersectionColor.getColorRed();
+					pixels[thisone].g = intersectionColor.getColorGreen();
+					pixels[thisone].b = intersectionColor.getColorBlue();
+				}
+				else{
+
+				}
 			}
 			
 			

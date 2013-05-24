@@ -17,6 +17,12 @@ public:
 	void setColorGreen(double value){ green = value; }
 	void setColorBlue(double value){ blue = value; }
 	void setColorSpecial(double value){ special = value; }
+
+	double brightness();
+	Color scalar(double);
+	Color add(Color);
+	Color mult(Color);
+	Color average(Color);
 };
 #endif
 

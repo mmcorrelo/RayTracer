@@ -3,8 +3,8 @@
 CC = g++
 CFLAGS = 
 LDFLAGS = 
-LIBS = Plane.o Object.o Sphere.o Light.o Color.o Camera.o Vector.o Ray.o main.o
-HEADERS = Plane.h Object.h Sphere.h Light.h Color.h Vector.h Ray.h Camera.h 
+LIBS = Source.o Plane.o Object.o Sphere.o Light.o Color.o Camera.o Vector.o Ray.o main.o
+HEADERS = Source.h Plane.h Object.h Sphere.h Light.h Color.h Vector.h Ray.h Camera.h 
 PROG = raytracer
 
 all: $(LIBS) 
@@ -25,7 +25,7 @@ Camera.o:  Vector.o Camera.cpp Camera.h
 Color.o:  Color.cpp Color.h 
 						${CC} ${CFLAGS} -c Color.cpp
 
-Light.o:  Vector.o Color.o Light.cpp Light.h 
+Light.o: Source.h Vector.o Color.o Light.cpp Light.h 
 						${CC} ${CFLAGS} -c Light.cpp
 
 Sphere.o:  Object.o Vector.o Color.o Object.h Sphere.cpp Sphere.h 
@@ -37,6 +37,8 @@ Object.o:  Ray.h Color.h Vector.h Object.cpp Object.h
 Plane.o:  Object.h Color.h Vector.h Plane.cpp Plane.h 
 						${CC} ${CFLAGS} -c Plane.cpp
 
+Source.o: Source.cpp Source.h 
+						${CC} ${CFLAGS} -c Source.cpp
 
 clean:
 	rm -rf *o *.bmp $(PROG)

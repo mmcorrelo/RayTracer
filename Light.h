@@ -3,7 +3,9 @@
 
 #include "Vector.h"
 #include "Color.h"
-class Light{
+#include "Source.h"
+
+class Light: public Source{
 	Vector position;
 	Color color;
 public:
