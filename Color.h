@@ -11,7 +11,7 @@ public:
 	double getColorRed() { return red; }
 	double getColorGreen() { return green; }
 	double getColorBlue() {return blue;}
-	double getSpecialColor() {return special;}
+	double getColorSpecial() {return special;}
 
 	void setColorRed(double value){ red = value; }
 	void setColorGreen(double value){ green = value; }
@@ -23,6 +23,7 @@ public:
 	Color add(Color);
 	Color mult(Color);
 	Color average(Color);
+	Color clip();
 };
 #endif
 

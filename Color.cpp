@@ -32,3 +32,22 @@ Color Color::mult(Color color){
 Color Color::average(Color color){
 	return Color((red + color.getColorRed())/2, (green + color.getColorGreen())/2, (blue + color.getColorBlue())/2, special);
 }
+
+Color Color::clip(){
+	double allRight = red + green + blue;
+	double excessLight = allRight - 3;
+	if (excessLight > 0){
+		red = red + excessLight * (red/allRight);
+		green = green + excessLight * (green/allRight);
+		blue = blue + excessLight * (blue/allRight);
+	}
+	if (red > 1) {red = 1;}
+	if (green > 1) {green = 1;}
+	if (blue > 1) {blue = 1;}
+
+	if (red < 0) {red = 0;}
+	if (green < 0) {green = 0;}
+	if (blue < 0) {blue = 0;}
+
+	return Color(red, green, blue, special);
+}

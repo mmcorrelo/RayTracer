@@ -19,7 +19,7 @@ public:
 	double getSphereDistance(){ return distance; }
 	virtual Color getColor();
 
-	Vector getNormalAt(Vector);
+	virtual Vector getNormalAt(Vector);
 	virtual double findIntersection(Ray);
 };
 #endif

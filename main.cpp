@@ -138,7 +138,62 @@ int winningObjectIndex(std::vector<double> object_intersections){
 }
 
 Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, std::vector<Object*> sceneObjects, int indexOfWinningObject, std::vector<Source*> lightSources, double accuracy, double ambientLight){
-	
+	Color winningObjectColor = sceneObjects.at(indexOfWinningObject)->getColor();
+	Vector winningObjectNormal = sceneObjects.at(indexOfWinningObject)->getNormalAt(intersectionPosition);
+	Color finalColor = winningObjectColor.scalar(ambientLight);
+
+	for (int lightIndex = 0; lightIndex < lightSources.size(); lightIndex ++){
+		Vector lightDirection = lightSources.at(lightIndex)->getLightDirection().add(intersectionPosition.negative()).normalize();
+		float cosineAngle = winningObjectNormal.dot(lightDirection);
+
+		if (cosineAngle > 0.0){
+			//test for shadows
+			bool shadowed = false;
+
+			Vector distanceToLight = lightSources.at(lightIndex)->getLightPosition().add(intersectionPosition.negative()).normalize();
+			float distanceToLightMagnitude = distanceToLight.magnitude();
+
+			Ray shadowRay(intersectionPosition, lightSources.at(lightIndex)->getLightPosition().add(intersectionPosition.negative()).normalize());
+			
+			std::vector<double> secundaryIntersections;
+
+			for (int objectIndex = 0; objectIndex < sceneObjects.size() && !shadowed; ++objectIndex){
+				secundaryIntersections.push_back(sceneObjects.at(objectIndex)->findIntersection(shadowRay));
+			}
+
+			for (int c = 0; c < secundaryIntersections.size(); c++){
+				if (secundaryIntersections.at(c) > accuracy){
+					if (secundaryIntersections.at(c) <= distanceToLightMagnitude){
+						shadowed = true;
+					}
+					break;
+				}
+			}
+
+			if(!shadowed){
+				finalColor = finalColor.add(winningObjectColor.mult(lightSources.at(lightIndex)->getLightColor().scalar(cosineAngle)));
+				
+				if (winningObjectColor.getColorSpecial() > 0.0 && winningObjectColor.getColorSpecial() <= 1.0){
+					// special value between 0 and 1 for the brightness 
+					double dot1 = winningObjectNormal.dot(intersectionRayDirection.negative());
+					Vector scalar1 = winningObjectNormal.mult(dot1);
+					Vector add1 = scalar1.add(intersectionRayDirection);
+					Vector scalar2 = add1.mult(2);
+					Vector add2 = intersectionRayDirection.negative().add(scalar2);
+					Vector reflectionDirection = add2.normalize();
+
+					double specular = reflectionDirection.dot(lightDirection);
+
+					if (specular > 0.0){
+						specular = pow(specular, 10);
+						finalColor = finalColor.add(lightSources.at(lightIndex)->getLightColor().scalar(specular*winningObjectColor.getColorSpecial()));
+					}
+				}
+			}
+
+		}
+	}
+	return finalColor.clip();
 }
 
 int main(int argv, char *argc[]){
