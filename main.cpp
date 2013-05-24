@@ -138,7 +138,7 @@ int winningObjectIndex(std::vector<double> object_intersections){
 }
 
 Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, std::vector<Object*> sceneObjects, int indexOfWinningObject, std::vector<Source*> lightSources, double accuracy, double ambientLight){
-	return Color(1,1,1,0);
+	
 }
 
 int main(int argv, char *argc[]){
