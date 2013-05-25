@@ -157,7 +157,7 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
 			
 			std::vector<double> secundaryIntersections;
 
-			for (int objectIndex = 0; objectIndex < sceneObjects.size() && !shadowed; ++objectIndex){
+			for (int objectIndex = 0; objectIndex < sceneObjects.size() && !shadowed; objectIndex++){
 				secundaryIntersections.push_back(sceneObjects.at(objectIndex)->findIntersection(shadowRay));
 			}
 
@@ -171,7 +171,7 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
 			}
 
 			if(!shadowed){
-				finalColor = finalColor.add(winningObjectColor.mult(lightSources.at(lightIndex)->getLightColor().scalar(cosineAngle)));
+				finalColor = finalColor.add(winningObjectColor.mult(lightSources.at(lightIndex)->getLightColor()).scalar(cosineAngle));
 				if (winningObjectColor.getColorSpecial() > 0.0 && winningObjectColor.getColorSpecial() <= 1.0){
 					// special value between 0 and 1 for the brightness 
 					double dot1 = winningObjectNormal.dot(intersectionRayDirection.negative());
@@ -182,11 +182,13 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
 					Vector reflectionDirection = add2.normalize();
 
 					double specular = reflectionDirection.dot(lightDirection);
-
+					
 					if (specular > 0.0){
+						cout << "in" << endl;
 						specular = pow(specular, 10);
 						finalColor = finalColor.add(lightSources.at(lightIndex)->getLightColor().scalar(specular*winningObjectColor.getColorSpecial()));
 					}
+
 				}
 			}
 
@@ -207,7 +209,7 @@ int main(int argv, char *argc[]){
 	double xamnt, yamnt; 
 	double aspectRatio = (double) width / (double) height;
 	double ambientLight = 0.2;
-	double accuracy = 0.000001;
+	double accuracy = 0.00000001;
 
 
 	Vector O (0,0,0);
@@ -227,7 +229,7 @@ int main(int argv, char *argc[]){
 	Color prettyGreen (0.5, 1.0, 0.5, 0.3);
 	Color gray (0.5, 0.5, 0.5, 0.0);
 	Color back (0.0, 0.0, 0.0, 0.0);
-	Color marron (0.5, 0.2, 0.25, 0.0);
+	Color marron (0.5, 0.25, 0.25, 0.0);
 
 	Vector lightPosition (-7, 10, -10);
 	Light sceneLight (lightPosition, whiteLight);
@@ -281,6 +283,7 @@ int main(int argv, char *argc[]){
 
 			int indexOfWinningObject = winningObjectIndex(intersections);
 
+			
 			if (indexOfWinningObject < 0.0){
 				//set background balck
 
@@ -289,7 +292,15 @@ int main(int argv, char *argc[]){
 				pixels[thisone].b = 0.0;
 			}
 			else{
-				// index corresponds to bject in our scene
+	/*
+	Color currentColor = sceneObjects.at(indexOfWinningObject)->getColor();
+
+    pixels[thisone].r = currentColor.getColorRed();
+    pixels[thisone].g = currentColor.getColorGreen();
+    pixels[thisone].b = currentColor.getColorBlue();
+    */
+				
+				// index corresponds to object in our scene
 				if (intersections.at(indexOfWinningObject) > accuracy){
 					//determine the position and direction vectors at the point of intersection
 					
@@ -301,9 +312,6 @@ int main(int argv, char *argc[]){
 					pixels[thisone].r = intersectionColor.getColorRed();
 					pixels[thisone].g = intersectionColor.getColorGreen();
 					pixels[thisone].b = intersectionColor.getColorBlue();
-				}
-				else{
-
 				}
 			}
 			
