@@ -140,6 +140,25 @@ int winningObjectIndex(std::vector<double> object_intersections){
 Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, std::vector<Object*> sceneObjects, int indexOfWinningObject, std::vector<Source*> lightSources, double accuracy, double ambientLight){
 	Color winningObjectColor = sceneObjects.at(indexOfWinningObject)->getColor();
 	Vector winningObjectNormal = sceneObjects.at(indexOfWinningObject)->getNormalAt(intersectionPosition);
+	
+	if (winningObjectColor.getColorSpecial() == 2){
+		//checkered/tile floor pattern
+		int square = (int) floor(intersectionPosition.getVectorX()) + (int) floor(intersectionPosition.getVectorZ());
+
+		if ((square % 2) == 0){
+			// black tile
+			winningObjectColor.setColorRed(0.0);
+			winningObjectColor.setColorGreen(0.0);
+			winningObjectColor.setColorBlue(0.0);
+		}
+		else{
+			//white tile
+			winningObjectColor.setColorRed(1.0);
+			winningObjectColor.setColorGreen(1.0);
+			winningObjectColor.setColorBlue(1.0);
+		}
+	}
+
 	Color finalColor = winningObjectColor.scalar(ambientLight);
 
 	for (int lightIndex = 0; lightIndex < lightSources.size(); lightIndex ++){
@@ -228,7 +247,7 @@ int main(int argv, char *argc[]){
 	Color prettyGreen (0.5, 1.0, 0.5, 0.3);
 	Color gray (0.5, 0.5, 0.5, 0.0);
 	Color back (0.0, 0.0, 0.0, 0.0);
-	Color marron (0.5, 0.25, 0.25, 0.0);
+	Color marron (0.5, 0.25, 0.25, 2.0);
 
 	Vector lightPosition (-7, 10, -10);
 	Light sceneLight (lightPosition, whiteLight);
@@ -236,7 +255,7 @@ int main(int argv, char *argc[]){
 
 	std::vector<Source*> lightSources;
 	lightSources.push_back(dynamic_cast<Source*>(&sceneLight));
-	lightSources.push_back(dynamic_cast<Source*>(&sceneLight2));
+	//lightSources.push_back(dynamic_cast<Source*>(&sceneLight2));
 
 	//scene objects
 	Sphere sphere(O, 1, prettyGreen);
@@ -246,7 +265,7 @@ int main(int argv, char *argc[]){
 	std::vector<Object*> sceneObjects;
 	sceneObjects.push_back(dynamic_cast<Object*>(&sphere));
 	sceneObjects.push_back(dynamic_cast<Object*>(&plane));
-	sceneObjects.push_back(dynamic_cast<Object*>(&plane2));
+	//sceneObjects.push_back(dynamic_cast<Object*>(&plane2));
 
 
 
