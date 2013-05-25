@@ -93,52 +93,51 @@ void savebmp(const char *filename, int w, int h, int dpi, RGBType *data){
 }
 
 int winningObjectIndex(std::vector<double> object_intersections){
-  // return the index of the winning intersection
+   // return the index of the winning intersection
   int indexOfMinimumValue;
-
-  //prevent unnecessary calculations
-  if (object_intersections.size() == 0){
+  
+  // prevent unnessary calculations
+  if (object_intersections.size() == 0) {
     // if there are no intersections
     return -1;
   }
-  else if (object_intersections.size() == 1){
-    if (object_intersections.at(0) > 0){
-      //if that instersection is grater than zero its our index of minimum value
+  else if (object_intersections.size() == 1) {
+    if (object_intersections.at(0) > 0) {
+      // if that intersection is greater than zero then its our index of minimum value
       return 0;
     }
-    else{
-      //otherwise the only intersection is negative
+    else {
+      // otherwise the only intersection value is negative
       return -1;
     }
   }
-  else{
-    // otherwise there is no more than one intersection
-    //first find the max value in vector
-
+  else {
+    // otherwise there is more than one intersection
+    // first find the maximum value
+    
     double max = 0;
-    for (int i; i < object_intersections.size(); i++){
-      if (max < object_intersections.at(i)){
+    for (int i = 0; i < object_intersections.size(); i++) {
+      if (max < object_intersections.at(i)) {
         max = object_intersections.at(i);
       }
     }
-
-    //then starting from the maximum value find the minimum positive value
-    if (max > 0){
+    
+    // then starting from the maximum value find the minimum positive value
+    if (max > 0) {
       // we only want positive intersections
-      for (int index = 0; index < object_intersections.size(); index++){
-        if (object_intersections.at(index) > 0 && object_intersections.at(index) <= max){
+      for (int index = 0; index < object_intersections.size(); index++) {
+        if (object_intersections.at(index) > 0 && object_intersections.at(index) <= max) {
           max = object_intersections.at(index);
-          indexOfMinimumValue = index;  
+          indexOfMinimumValue = index;
         }
       }
-
+      
       return indexOfMinimumValue;
     }
-    else{
-      //all the instersections were negative
+    else {
+      // all the intersections were negative
       return -1;
     }
-
   }
 }
 
