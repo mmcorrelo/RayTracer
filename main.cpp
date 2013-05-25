@@ -5,10 +5,15 @@
 #include <vector>
 #include <cmath>
 #include <limits>
+#include <ctime>
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
+
+//linux header
+#include <unistd.h>
+#include <sys/time.h>
+//------
 
 #include "Vector.h"
 #include "Ray.h"
@@ -218,6 +223,15 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
 int main(int argv, char *argc[]){
 
 	cout << "rendering ..." << endl;
+
+	//window thing
+	//clock_t t1, t2;
+	//t1 = clock();
+	
+	//linux thing
+	timeval t1, t2 ;
+	gettimeofday(&t1,0);	
+
 	int dpi = 72;
 	int width = 640;
 	int height = 480;
@@ -247,7 +261,8 @@ int main(int argv, char *argc[]){
 	Color prettyGreen (0.5, 1.0, 0.5, 0.3);
 	Color gray (0.5, 0.5, 0.5, 0.0);
 	Color back (0.0, 0.0, 0.0, 0.0);
-	Color marron (0.5, 0.25, 0.25, 2.0);
+	Color marron (0.5, 0.25, 0.25, 0.0);
+	Color tileFloor (1.0, 1.0, 1.0, 2.0);
 
 	Vector lightPosition (-7, 10, -10);
 	Light sceneLight (lightPosition, whiteLight);
@@ -259,7 +274,7 @@ int main(int argv, char *argc[]){
 
 	//scene objects
 	Sphere sphere(O, 1, prettyGreen);
-	Plane plane(Y, -1.0, marron);
+	Plane plane(Y, -1.0, tileFloor);
 	Plane plane2(Vector(1,0,0), -10.0, marron);
 
 	std::vector<Object*> sceneObjects;
@@ -334,5 +349,18 @@ int main(int argv, char *argc[]){
 		}
 	}
 	savebmp("scene.bmp", width, height, dpi, pixels);
+
+	delete pixels;
+
+	//windows thing
+	//t2 = clock();
+	//float diff = ((float) t2 - (float) t1);
+	
+	//linux thing
+	gettimeofday(&t2,0);
+	float diff = t2.tv_sec - t1.tv_sec;
+	
+	cout << diff << " seconds" << endl;
+
 	return 0;
 }
