@@ -6,6 +6,10 @@ Vector Source::getLightPosition(){
 	return Vector(0.0, 0.0, 0.0);
 }
 
-Color Source::getColor(){
+Vector Source::getLightDirection(){
+	return Vector(0.0, 0.0, 0.0);
+}
+
+Color Source::getLightColor(){
 	return Color(1.0, 1.0, 1.0, 0);
 }

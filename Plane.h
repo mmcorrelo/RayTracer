@@ -15,11 +15,11 @@ public:
 	Plane();
 	Plane(Vector, double, Color);
 
-	Vector getSphereNormal(){ return normal; }
-	double getSphereDistance(){ return distance; }
+	Vector getPlaneNormal(){ return normal; }
+	double getPlaneDistance(){ return distance; }
 	virtual Color getColor();
 
-	Vector getNormalAt(Vector);
+	virtual Vector getNormalAt(Vector);
 	virtual double findIntersection(Ray);
 };
 #endif

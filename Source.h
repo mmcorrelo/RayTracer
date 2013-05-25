@@ -10,7 +10,9 @@ public:
 	Source();
 
 	virtual Vector getLightPosition();
-	virtual Color getColor();
+	virtual Vector getLightDirection();
+	virtual Color  getLightColor();
+	
 
 };
 #endif
