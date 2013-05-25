@@ -15,8 +15,8 @@ public:
 	Plane();
 	Plane(Vector, double, Color);
 
-	Vector getSphereNormal(){ return normal; }
-	double getSphereDistance(){ return distance; }
+	Vector getPlaneNormal(){ return normal; }
+	double getPlaneDistance(){ return distance; }
 	virtual Color getColor();
 
 	virtual Vector getNormalAt(Vector);

@@ -184,7 +184,6 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
 					double specular = reflectionDirection.dot(lightDirection);
 					
 					if (specular > 0.0){
-						cout << "in" << endl;
 						specular = pow(specular, 10);
 						finalColor = finalColor.add(lightSources.at(lightIndex)->getLightColor().scalar(specular*winningObjectColor.getColorSpecial()));
 					}
@@ -233,17 +232,21 @@ int main(int argv, char *argc[]){
 
 	Vector lightPosition (-7, 10, -10);
 	Light sceneLight (lightPosition, whiteLight);
+	Light sceneLight2 (Vector(7, 10, -10), whiteLight);
 
 	std::vector<Source*> lightSources;
 	lightSources.push_back(dynamic_cast<Source*>(&sceneLight));
+	lightSources.push_back(dynamic_cast<Source*>(&sceneLight2));
 
 	//scene objects
 	Sphere sphere(O, 1, prettyGreen);
 	Plane plane(Y, -1.0, marron);
+	Plane plane2(Vector(1,0,0), -10.0, marron);
 
 	std::vector<Object*> sceneObjects;
 	sceneObjects.push_back(dynamic_cast<Object*>(&sphere));
 	sceneObjects.push_back(dynamic_cast<Object*>(&plane));
+	sceneObjects.push_back(dynamic_cast<Object*>(&plane2));
 
 
 
@@ -292,13 +295,6 @@ int main(int argv, char *argc[]){
 				pixels[thisone].b = 0.0;
 			}
 			else{
-	/*
-	Color currentColor = sceneObjects.at(indexOfWinningObject)->getColor();
-
-    pixels[thisone].r = currentColor.getColorRed();
-    pixels[thisone].g = currentColor.getColorGreen();
-    pixels[thisone].b = currentColor.getColorBlue();
-    */
 				
 				// index corresponds to object in our scene
 				if (intersections.at(indexOfWinningObject) > accuracy){

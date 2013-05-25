@@ -1,9 +1,9 @@
 #include "Color.h"
 
 Color::Color(){
-	red = 0.5;
-	green = 0.5;
-	blue = 0.5;
+	red = 0.0;
+	green = 0.0;
+	blue = 0.0;
 }
 
 Color::Color(double r, double g, double b, double s){
@@ -14,11 +14,11 @@ Color::Color(double r, double g, double b, double s){
 }
 
 double Color::brightness(){
-	return (red + blue + green)/3;
+	return (red + green + blue)/3;
 }
 
 Color Color::scalar(double scalar){
-	return Color(red * scalar, green * scalar, blue * scalar, special);
+	return Color (red * scalar, green * scalar, blue * scalar, special);
 }
 
 Color Color::add(Color color){
@@ -26,7 +26,7 @@ Color Color::add(Color color){
 }
 
 Color Color::mult(Color color){
-	return Color(red + color.getColorRed(), green * color.getColorGreen(), blue * color.getColorBlue(), special);	
+	return Color (red * color.getColorRed(), green * color.getColorGreen(), blue * color.getColorBlue(), special);
 }
 
 Color Color::average(Color color){
