@@ -143,7 +143,7 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
 	Color finalColor = winningObjectColor.scalar(ambientLight);
 
 	for (int lightIndex = 0; lightIndex < lightSources.size(); lightIndex ++){
-		Vector lightDirection = lightSources.at(lightIndex)->getLightDirection().add(intersectionPosition.negative()).normalize();
+		Vector lightDirection = lightSources.at(lightIndex)->getLightPosition().add(intersectionPosition.negative()).normalize();
 		float cosineAngle = winningObjectNormal.dot(lightDirection);
 
 		if (cosineAngle > 0.0){
@@ -172,7 +172,6 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
 
 			if(!shadowed){
 				finalColor = finalColor.add(winningObjectColor.mult(lightSources.at(lightIndex)->getLightColor().scalar(cosineAngle)));
-				
 				if (winningObjectColor.getColorSpecial() > 0.0 && winningObjectColor.getColorSpecial() <= 1.0){
 					// special value between 0 and 1 for the brightness 
 					double dot1 = winningObjectNormal.dot(intersectionRayDirection.negative());
