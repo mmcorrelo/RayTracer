@@ -44,4 +44,4 @@ Triangle.o: Object.o Vector.o Color.o Object.h Triangle.cpp Triangle.h
 						${CC} ${CFLAGS} -c Triangle.cpp
 
 clean:
-	rm -rf *o *.bmp $(PROG)
+	rm -rf *o scene.bmp $(PROG)
