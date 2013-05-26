@@ -15,6 +15,8 @@
 #include <sys/time.h>
 //------
 
+
+#include "libs/pugixml.hpp"
 #include "Vector.h"
 #include "Ray.h"
 #include "Camera.h"

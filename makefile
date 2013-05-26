@@ -3,9 +3,10 @@
 CC = g++
 CFLAGS = 
 LDFLAGS = 
-LIBS = Source.o Plane.o Triangle.o Object.o Sphere.o Light.o Color.o Camera.o Vector.o Ray.o main.o
-HEADERS = Source.h Plane.h Triangle.h Object.h Sphere.h Light.h Color.h Vector.h Ray.h Camera.h 
+LIBS = pugixml.o Source.o Plane.o Triangle.o Object.o Sphere.o Light.o Color.o Camera.o Vector.o Ray.o main.o
+HEADERS = $(LIBPATH)pugiconfig.hpp $(LIBPATH)pugixml.hpp Source.h Plane.h Triangle.h Object.h Sphere.h Light.h Color.h Vector.h Ray.h Camera.h 
 PROG = raytracer
+LIBPATH = libs/
 
 all: $(LIBS) 
 			${CC} ${CFLAGS} $(LIBS) $(LDFLAGS) -o $(PROG)
@@ -42,6 +43,9 @@ Source.o: Source.cpp Source.h
 
 Triangle.o: Object.o Vector.o Color.o Object.h Triangle.cpp Triangle.h 
 						${CC} ${CFLAGS} -c Triangle.cpp
+
+pugixml.o: $(LIBPATH)pugiconfig.hpp $(LIBPATH)pugixml.hpp $(LIBPATH)pugixml.cpp
+			${CC} ${CFLAGS} -c $(LIBPATH)pugixml.cpp
 
 clean:
 	rm -rf *o scene.bmp $(PROG)
