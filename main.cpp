@@ -181,11 +181,10 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
 
     for (int reflectionIndex = 0; reflectionIndex < sceneObjects.size(); reflectionIndex++){
       reflectionIntersections.push_back(sceneObjects.at(reflectionIndex)->findIntersection(reflectionRay));
-    //  cout << "cicle" << endl;
     }
-    cout << reflectionIntersections.size() << endl;
+
     int indexOfWinningObjectWithReflection = winningObjectIndex(reflectionIntersections);
-   // cout << indexOfWinningObjectWithReflection << endl;
+
     if (indexOfWinningObjectWithReflection != -1){
       //reflection ray missed everthing else
       if (reflectionIntersections.at(indexOfWinningObjectWithReflection) > accuracy){
@@ -197,7 +196,6 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
         Color reflectionIntersectionColor = getColorAt(reflectionIntersectionPosition, reflectionIntersectionRayDirection, sceneObjects, indexOfWinningObjectWithReflection, lightSources, accuracy, ambientLight);
       
         finalColor = finalColor.add(reflectionIntersectionColor.scalar(winningObjectColor.getColorSpecial()));
-        cout << "in" << endl;
       }   
     }
 
@@ -273,9 +271,15 @@ int main(int argv, char *argc[]){
   int width = 640;
   int height = 480;
   int n = width * height;
+
   RGBType *pixels = new RGBType[n];
-  int thisone;
-  double xamnt, yamnt; 
+
+
+  int aadepth = 1;//for multisampling thing
+  double aaThreshold = 0.1;
+ 
+
+
   double aspectRatio = (double) width / (double) height;
   double ambientLight = 0.2;
   double accuracy = 0.00000001;
@@ -283,8 +287,10 @@ int main(int argv, char *argc[]){
 
   Vector O (0,0,0);
   Vector X (1,0,0);
+  Vector X1 (2,0,0);
   Vector Y (0,1,0);
   Vector Z (0,0,1);
+
 
   Vector camPos (3,1.5, -4);
   Vector lookAt (0,0,0);
@@ -311,83 +317,139 @@ int main(int argv, char *argc[]){
 
   //scene objects
   Sphere sphere(O, 1, prettyGreen);
+  Sphere sphere2 (X1, 0.75, marron);
   Plane plane(Y, -1.0, tileFloor);
   Plane plane2(Vector(1,0,0), -10.0, marron);
 
   std::vector<Object*> sceneObjects;
   sceneObjects.push_back(dynamic_cast<Object*>(&sphere));
   sceneObjects.push_back(dynamic_cast<Object*>(&plane));
-  //sceneObjects.push_back(dynamic_cast<Object*>(&plane2));
+  sceneObjects.push_back(dynamic_cast<Object*>(&sphere2));
 
+  int thisone, aa_index;
+  double xamnt, yamnt; 
+  double tempRed, tempGreen, tempBlue;
 
 
   for (int x = 0; x < width; x++){
     for (int y = 0; y < height; y++){
       thisone = y * width + x;
 
-      //start with anti-aliasing
-      if (width > height){
-        //the image is wider than it is all
-        xamnt = ((x+0.5)/width)*aspectRatio - (((width - height)/(double) height)/2);
-        yamnt =((height - y) + 0.5)/height;
 
-      }
-      else if (height > width){
-        //the image is taller than it is wide
-        xamnt = (x+ 0.5) / width;
-        yamnt = (((height - y) + 0.5)/height)/ aspectRatio - (((height - width)/ (double) width)/2);
-      }
-      else{
-        // the image is square
-        xamnt = (x + 0.5) / width;
-        yamnt = ((height - y) + 0.5)/height;
-      }
 
-      Vector cameraRayOrigin = scaneCam.getCameraPosition();
-      Vector cameraRayDirection = camDir.add(camRight.mult(xamnt - 0.5).add(camDown.mult(yamnt- 0.5))).normalize();
+      //start the blank pixel
+      double tempRed[aadepth*aadepth];
+      double tempGreen[aadepth*aadepth];    
+      double tempBlue[aadepth*aadepth];
 
-      Ray cameraRay(cameraRayOrigin, cameraRayDirection);
-
-      std::vector<double> intersections;
-      //find instersection for each object scene
-      
-      for (int index = 0; index < sceneObjects.size(); index++){
-        intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
-      }
-
-      int indexOfWinningObject = winningObjectIndex(intersections);
-
-      
-      if (indexOfWinningObject < 0.0){
-        //set background balck
-
-        pixels[thisone].r = 0.0;
-        pixels[thisone].g = 0.0;
-        pixels[thisone].b = 0.0;
-      }
-      else{
-        
-        // index corresponds to object in our scene
-        if (intersections.at(indexOfWinningObject) > accuracy){
-          //determine the position and direction vectors at the point of intersection
           
-          Vector intersectionPosition = cameraRayOrigin.add(cameraRayDirection.mult(intersections.at(indexOfWinningObject)));
-          Vector intersectionRayDirection = cameraRayDirection;
+      for (int aax = 0; aax < aadepth; aax++) {
+        for (int aay = 0; aay < aadepth; aay++) {    
+          
+          aa_index = aay * aadepth + aax;
 
-          Color intersectionColor = getColorAt(intersectionPosition, intersectionRayDirection, sceneObjects, indexOfWinningObject, lightSources, accuracy, ambientLight);
+           srand(time(0));
+          //create the ray from camera to this pixel
+          if (aadepth == 1){
+            // start with no anti-aliasing
+            if (width > height) {
+              // the image is wider than it is tall
+              xamnt = ((x+0.5)/width)*aspectRatio - (((width-height)/(double)height)/2);
+              yamnt = ((height - y) + 0.5)/height;
+            }
+            else if (height > width) {
+              // the imager is taller than it is wide
+              xamnt = (x + 0.5)/ width;
+              yamnt = (((height - y) + 0.5)/height)/aspectRatio - (((height - width)/(double)width)/2);
+            }
+            else {
+              // the image is square
+              xamnt = (x + 0.5)/width;
+              yamnt = ((height - y) + 0.5)/height;
+            }
 
-          pixels[thisone].r = intersectionColor.getColorRed();
-          pixels[thisone].g = intersectionColor.getColorGreen();
-          pixels[thisone].b = intersectionColor.getColorBlue();
+          }
+          else{
+            //anti-aliasing
+            if (width > height) {
+              // the image is wider than it is tall
+              xamnt = ((x + (double)aax/((double)aadepth - 1))/width)*aspectRatio - (((width-height)/(double)height)/2);
+              yamnt = ((height - y) + (double)aax/((double)aadepth - 1))/height;
+            }
+            else if (height > width) {
+              // the imager is taller than it is wide
+              xamnt = (x + (double)aax/((double)aadepth - 1))/ width;
+              yamnt = (((height - y) + (double)aax/((double)aadepth - 1))/height)/aspectRatio - (((height - width)/(double)width)/2);
+            }
+            else {
+              // the image is square
+              xamnt = (x + (double)aax/((double)aadepth - 1))/width;
+              yamnt = ((height - y) + (double)aax/((double)aadepth - 1))/height;
+            }
+          }
+
+          Vector cameraRayOrigin = scaneCam.getCameraPosition();
+          Vector cameraRayDirection = camDir.add(camRight.mult(xamnt - 0.5).add(camDown.mult(yamnt- 0.5))).normalize();
+
+          Ray cameraRay(cameraRayOrigin, cameraRayDirection);
+
+          std::vector<double> intersections;
+          //find instersection for each object scene
+              
+          for (int index = 0; index < sceneObjects.size(); index++){
+            intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
+          }
+
+          int indexOfWinningObject = winningObjectIndex(intersections);
+    
+          if (indexOfWinningObject < 0.0){
+          //set background black
+
+            tempRed[aa_index] = 0.0;
+            tempGreen[aa_index] = 0.0;
+            tempBlue[aa_index] = 0.0;
+          }
+          else{      
+          // index corresponds to object in our scene
+            if (intersections.at(indexOfWinningObject) > accuracy){
+            //determine the position and direction vectors at the point of intersection
+                  
+              Vector intersectionPosition = cameraRayOrigin.add(cameraRayDirection.mult(intersections.at(indexOfWinningObject)));
+              Vector intersectionRayDirection = cameraRayDirection;
+
+              Color intersectionColor = getColorAt(intersectionPosition, intersectionRayDirection, sceneObjects, indexOfWinningObject, lightSources, accuracy, ambientLight);
+
+              tempRed[aa_index] = intersectionColor.getColorRed();
+              tempGreen[aa_index] = intersectionColor.getColorGreen();
+              tempBlue[aa_index] = intersectionColor.getColorBlue();
+            }
+          }     
         }
       }
-      
-      
+      //average the pixel color
+      double totalRed = 0;
+      double totalGreen = 0;
+      double totalBlue = 0;
+
+      for (int indexColor = 0; indexColor < aadepth * aadepth; indexColor++){
+        totalRed = totalRed + tempRed[indexColor]; 
+        totalGreen = totalGreen + tempGreen[indexColor];
+        totalBlue = totalBlue + tempBlue[indexColor];
+      }
+
+      double avgRed = totalRed / (aadepth * aadepth); 
+      double avgGreen = totalGreen / (aadepth * aadepth);
+      double avgBlue = totalBlue / (aadepth * aadepth);
+
+      pixels[thisone].r = avgRed;
+      pixels[thisone].g = avgGreen;
+      pixels[thisone].b = avgBlue;
     }
   }
+
   savebmp("scene.bmp", width, height, dpi, pixels);
 
-  delete pixels;
+  delete pixels, tempBlue, tempGreen, tempRed;
 
   //windows thing
   //t2 = clock();
