@@ -8,6 +8,6 @@ In this project will be contemplated topics such as:
 
 For any reason needs to contact me, you cant to correlomm at gmail dot com
 
-Actual output:
+Current screenshot:
 
 ![ScreenShot](https://raw.github.com/mmcorrelo/RayTracer/dev/screenshot.bmp)
