@@ -5,7 +5,6 @@
 //------
 
 #include "Util.h"
-#include "libs/pugixml.hpp"
 #include "Vector.h"
 #include "Ray.h"
 #include "Camera.h"
@@ -16,6 +15,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Triangle.h"
+#include "Loader.h"
 
 using namespace std;
 
@@ -69,7 +69,10 @@ void makeCube(Vector corner1, Vector corner2, Color color){
 int main(int argv, char *argc[]){
 
   cout << "rendering ..." << endl;
+  Loader *config = new Loader("models/model1.xml");
 
+  cout << "Model name: " << config->getModelName() << endl;
+ // exit(0);
   //window thing
   //clock_t t1, t2;
   //t1 = clock();
@@ -78,9 +81,9 @@ int main(int argv, char *argc[]){
   timeval t1, t2 ;
   gettimeofday(&t1,0);  
 
-  int dpi = 72;
-  int width = 640;
-  int height = 480;
+  int dpi = config->getDpi();
+  int width = config->getWidth();
+  int height = config->getHeight();
   int n = width * height;
 
   RGBType *pixels = new RGBType[n];
