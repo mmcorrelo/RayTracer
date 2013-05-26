@@ -6,5 +6,5 @@
 *.exe
 *.o
 *.so
-*.bmp
+scene.bmp
 raytracer
