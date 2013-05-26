@@ -24,6 +24,7 @@
 #include "Object.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Triangle.h"
 
 using namespace std;
 
@@ -224,8 +225,9 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
         if (secundaryIntersections.at(c) > accuracy){
           if (secundaryIntersections.at(c) <= distanceToLightMagnitude){
             shadowed = true;
+            //break;
           }
-          break;
+       //   break;
         }
       }
 
@@ -254,7 +256,50 @@ Color getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, s
   }
   return finalColor.clip();
 }
+/*
+void makeCube(Vector corner1, Vector corner2, Color color){
+  //coner1
+  double c1x = corner1.getVectorX();
+  double c1y = corner1.getVectorY();
+  double c1z = corner1.getVectorZ();
 
+  double c2x = corner2.getVectorX();
+  double c2y = corner2.getVectorY();
+  double c2z = corner2.getVectorZ();
+
+  Vector A (c2x, c1y, c1z);
+  Vector B (c2x, c1y, c2z);
+  Vector C (c1x, c1y, c2z);
+
+  Vector D (c2x, c2y, c1z);
+  Vector E (c1x, c2y, c1z);
+  Vector F (c1x, c2y, c2z);
+
+  //left side 
+  sceneObjects.push_back(new Triangle(D, A, corner1, color));
+  sceneObjects.push_back(new Triangle(corner1, E, D, color));
+
+  //far side
+  sceneObjects.push_back(new Triangle(corner2, B, A, color));  
+  sceneObjects.push_back(new Triangle(A, D, corner2, color));
+
+  //right side
+  sceneObjects.push_back(new Triangle(F, C, B, color));  
+  sceneObjects.push_back(new Triangle(B, corner2, F, color));
+
+  //front side
+  sceneObjects.push_back(new Triangle(E, corner1, C, color));  
+  sceneObjects.push_back(new Triangle(C, F, E, color));
+
+  //top side
+  sceneObjects.push_back(new Triangle(D, E, F, color));  
+  sceneObjects.push_back(new Triangle(F, corner2, D, color));
+
+  //bottom side
+  sceneObjects.push_back(new Triangle(corner1, A, B, color));  
+  sceneObjects.push_back(new Triangle(B, C, corner1, color));
+}
+*/
 int main(int argv, char *argc[]){
 
   cout << "rendering ..." << endl;
@@ -273,7 +318,7 @@ int main(int argv, char *argc[]){
   int n = width * height;
 
   RGBType *pixels = new RGBType[n];
-
+  std::vector<Object*> sceneObjects;
 
   int aadepth = 1;//for multisampling thing
   double aaThreshold = 0.1;
@@ -304,8 +349,9 @@ int main(int argv, char *argc[]){
   Color prettyGreen (0.5, 1.0, 0.5, 0.3);
   Color gray (0.5, 0.5, 0.5, 0.0);
   Color back (0.0, 0.0, 0.0, 0.0);
-  Color marron (0.5, 0.25, 0.25, 0.0);
+  Color marron (0.5, 0.25, 0.25, 0.1);
   Color tileFloor (1.0, 1.0, 1.0, 2.0);
+  Color orange (0.94, 0.75, 0.31, 0.3);
 
   Vector lightPosition (-7, 10, -10);
   Light sceneLight (lightPosition, whiteLight);
@@ -318,14 +364,19 @@ int main(int argv, char *argc[]){
   //scene objects
   Sphere sphere(O, 1, prettyGreen);
   Sphere sphere2 (X1, 0.75, marron);
+  Sphere sphere3 (Vector(-1, 0.5, -2), 0.8, marron);
   Plane plane(Y, -1.0, tileFloor);
   Plane plane2(Vector(1,0,0), -10.0, marron);
+  Triangle triangle (Vector(3.0, 0.0, 0.0), Vector(0.0, 3.0, 0.0),Vector(0.0, 0.0, 3.0), orange);
 
-  std::vector<Object*> sceneObjects;
+  
   sceneObjects.push_back(dynamic_cast<Object*>(&sphere));
   sceneObjects.push_back(dynamic_cast<Object*>(&plane));
   sceneObjects.push_back(dynamic_cast<Object*>(&sphere2));
+  sceneObjects.push_back(dynamic_cast<Object*>(&sphere3));
+//  sceneObjects.push_back(dynamic_cast<Object*>(&triangle));
 
+  //makeCube(Vector(1.0, 1.0, 1.0), Vector(-1.0, -1.0, -1.0), orange);
   int thisone, aa_index;
   double xamnt, yamnt; 
   double tempRed, tempGreen, tempBlue;
