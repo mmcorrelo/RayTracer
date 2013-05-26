@@ -132,7 +132,7 @@ int main(int argv, char *argc[]){
   Sphere sphere2 (X1, 0.75, marron);
   Sphere sphere3 (Vector(-1, 0.5, -2), 0.8, marron);
   Plane plane(Y, -1.0, tileFloor);
-  Plane plane2(Vector(1,0,0), -10.0, marron);
+  //Plane plane2(Vector(1,0,0), -10.0, marron);
   Triangle triangle (Vector(3.0, 0.0, 0.0), Vector(0.0, 3.0, 0.0),Vector(0.0, 0.0, 3.0), orange);
 
   
