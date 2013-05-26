@@ -10,4 +10,4 @@ For any reason needs to contact me, you cant to correlomm at gmail dot com
 
 Actual output:
 
-![Alt text](https://raw.github.com/mmcorrelo/RayTracer/dev/screenshot.bmp, "Screenshot")
+![ScreenShot](https://raw.github.com/mmcorrelo/RayTracer/dev/screenshot.bmp, "Screenshot")
