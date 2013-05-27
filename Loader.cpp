@@ -112,23 +112,18 @@ Loader::Loader(const char *filename, vector<Object*> &sceneObjects, vector<Sourc
 	 	y = pointA.attribute("y").as_double();
 	 	z = pointA.attribute("z").as_double();
 	 	Vector A(x, y, z);
-	 	cout << x << " " <<  y << " " << z << endl;
 
 	 	pugi::xml_node pointB = pointA.next_sibling();
 	 	x = pointB.attribute("x").as_double();
 	 	y = pointB.attribute("y").as_double();
 	 	z = pointB.attribute("z").as_double();
 	 	Vector B(x, y, z);
-	 	cout << x << " " <<  y << " " << z << endl;
-
 
 	 	pugi::xml_node pointC = pointB.next_sibling();
 	 	x = pointC.attribute("x").as_double();
 	 	y = pointC.attribute("y").as_double();
 	 	z = pointC.attribute("z").as_double();
 	 	Vector C(x, y, z);
-	 	cout << x << " " <<  y << " " << z << endl;
-
 
 	  pugi::xml_node colorTriangle = it->child("color");
 	 	r = colorTriangle.attribute("r").as_double();

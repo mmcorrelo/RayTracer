@@ -69,11 +69,9 @@ void makeCube(Vector corner1, Vector corner2, Color color){
 int main(int argv, char *argc[]){
   std::vector<Source*> lightSources;
   std::vector<Object*> sceneObjects;
-
+  
   cout << "rendering ..." << endl;
   Loader *config = new Loader("models/model1.xml", sceneObjects, lightSources);
-
- // exit(0);
   //window thing
   //clock_t t1, t2;
   //t1 = clock();
@@ -99,8 +97,13 @@ int main(int argv, char *argc[]){
   double ambientLight = 0.2;
   double accuracy = 0.00000001;
 
+  /*
+  Vector O (0,0,0);
+  Vector X (1,0,0);
+  Vector X1 (2,0,0);
+  Vector Z (0,0,1);*/
 
-
+  Vector Y (0,1,0);
   Vector camPos = config->getCameraPosition();
   Vector lookAt = config->getLookAt();
 
@@ -109,7 +112,7 @@ int main(int argv, char *argc[]){
   Vector camRight = Y.cross(camDir).normalize();
   Vector camDown = camRight.cross(camDir);
   Camera scaneCam (camPos, camDir, camRight, camDown);
-
+/*
   Color whiteLight (1.0, 1.0, 1.0, 0.0);
   Color prettyGreen (0.5, 1.0, 0.5, 0.3);
   Color gray (0.5, 0.5, 0.5, 0.0);
@@ -117,7 +120,8 @@ int main(int argv, char *argc[]){
   Color marron (0.5, 0.25, 0.25, 0.1);
   Color tileFloor (1.0, 1.0, 1.0, 2.0);
   Color orange (0.94, 0.75, 0.31, 0.3);
- 
+
+ */
 
   //makeCube(Vector(1.0, 1.0, 1.0), Vector(-1.0, -1.0, -1.0), orange);
   int thisone, aa_index;
@@ -128,8 +132,6 @@ int main(int argv, char *argc[]){
   for (int x = 0; x < width; x++){
     for (int y = 0; y < height; y++){
       thisone = y * width + x;
-
-
 
       //start the blank pixel
       double tempRed[aadepth*aadepth];
