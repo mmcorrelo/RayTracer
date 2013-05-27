@@ -2,17 +2,22 @@
 	<author>Miguel Correlo</author>
 	<date>25-05-2013</date>
 
-	<resolution width="640" height="480" dpi="72"></resolution>
-	<multisampling depth="1" threshold="0.1"></multisampling>
+	<resolution width="640" height="480" dpi="72"/>
+	<multisampling depth="1" threshold="0.1"/>
 
 	<camera>
-		<position>3.0 1.5 -4.0</position>
-		<lookat>0.0 0.0 0.0</lookat>
+		<position x="3.0" y="1.5" z="-4.0"/>
+		<lookat x="0.0" y="0.0" z="0.0"/>
 	</camera>
 
 
 	<lights>
-		<light><position>-7.0 10.0 -10.0</position><color>1.0 1.0 1.0 0.0</color></light>
+		
+		<light>
+			<position x="-7.0" y="10.0" z="-10.0"/>
+			<color r="1.0" g="1.0" b="1.0"/>
+		</light>
+
 	</lights>
 
 

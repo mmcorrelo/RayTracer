@@ -13,6 +13,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -25,8 +26,11 @@ class Loader{
 	string author;
 	string modelName;
 	string date;
+	Vector camPos;
+	Vector lookAt;
+	vector<Source*> lightSources;
 public:
-	Loader(const char *filename);
+	Loader(const char*,vector<Source*>&);
 	int getWidth();
 	int getHeight();
 	int getDpi();
@@ -36,7 +40,10 @@ public:
 	string getModelName();
 	string getAuthor();
 	string getDate();
-	
+
+	Vector getCameraPosition();
+	Vector getLookAt();
+	//void getLightSources();
 };
 
 #endif

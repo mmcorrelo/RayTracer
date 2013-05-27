@@ -67,11 +67,11 @@ void makeCube(Vector corner1, Vector corner2, Color color){
 }
 */
 int main(int argv, char *argc[]){
-
+  std::vector<Source*> lightSources;
   cout << "rendering ..." << endl;
-  Loader *config = new Loader("models/model1.xml");
+  Loader *config = new Loader("models/model1.xml",lightSources);
 
-  cout << "Model name: " << config->getModelName() << endl;
+  cout << "Size: " << lightSources.at(0)->getLightDirection().getVectorY() << endl;
  // exit(0);
   //window thing
   //clock_t t1, t2;
@@ -89,8 +89,8 @@ int main(int argv, char *argc[]){
   RGBType *pixels = new RGBType[n];
   std::vector<Object*> sceneObjects;
 
-  int aadepth = 1;//for multisampling thing
-  double aaThreshold = 0.1;
+  int aadepth = config->getDepth();//for multisampling thing
+  double aaThreshold = config->getThreshold();
  
 
 
@@ -106,8 +106,9 @@ int main(int argv, char *argc[]){
   Vector Z (0,0,1);
 
 
-  Vector camPos (3,1.5, -4);
-  Vector lookAt (0,0,0);
+  Vector camPos = config->getCameraPosition();
+  Vector lookAt = config->getLookAt();
+
   Vector diff_btw(camPos.getVectorX() - lookAt.getVectorX(), camPos.getVectorY() - lookAt.getVectorY(),camPos.getVectorZ() - lookAt.getVectorZ());
   Vector camDir = diff_btw.negative().normalize();
   Vector camRight = Y.cross(camDir).normalize();
@@ -122,12 +123,13 @@ int main(int argv, char *argc[]){
   Color tileFloor (1.0, 1.0, 1.0, 2.0);
   Color orange (0.94, 0.75, 0.31, 0.3);
 
-  Vector lightPosition (-7, 10, -10);
-  Light sceneLight (lightPosition, whiteLight);
-  Light sceneLight2 (Vector(7, 10, -10), whiteLight);
+  //Vector lightPosition (-7, 10, -10);
+  //Light sceneLight (lightPosition, whiteLight);
+  //Light sceneLight2 (Vector(7, 10, -10), whiteLight);
 
-  std::vector<Source*> lightSources;
-  lightSources.push_back(dynamic_cast<Source*>(&sceneLight));
+ 
+ // config->getLightSources(lightSources);
+  //lightSources.push_back(dynamic_cast<Source*>(&sceneLight));
   //lightSources.push_back(dynamic_cast<Source*>(&sceneLight2));
 
   //scene objects

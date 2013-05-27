@@ -1,6 +1,7 @@
 #include "Loader.h"
 
-Loader::Loader(const char *filename){
+Loader::Loader(const char *filename, vector<Source*> &sources){
+	this->lightSources = sources;
 	pugi::xml_document doc;	
 
   if (!doc.load_file(filename)){
@@ -23,25 +24,43 @@ Loader::Loader(const char *filename){
   this->dpi = resolution.attribute("dpi").as_int();
   
   pugi::xml_node multisampling = scene.child("multisampling");
-	//std::cout << "depth " << multisampling.attribute("depth").value() << std::endl;
-  //std::cout << "threshold " << multisampling.attribute("threshold").value() << std::endl;
- 
+  this->depth = multisampling.attribute("depth").as_int();
+  this->threshold = multisampling.attribute("threshold").as_double();
+	
+  pugi::xml_node camera = scene.child("camera");
+  pugi::xml_node position = camera.child("position");
 
-  /*
-    //[code_traverse_base_basic
-  for (pugi::xml_node tool = tools.first_child(); tool; tool = tool.next_sibling()){
-        std::cout << "Tool:";
-    for (pugi::xml_attribute attr = tool.first_attribute(); attr; attr = attr.next_attribute()){
-            std::cout << " " << attr.name() << "=" << attr.value();
-    }
+  double x,y,z;
+  x = position.attribute("x").as_double();
+  y = position.attribute("y").as_double();
+  z = position.attribute("z").as_double();
+  this->camPos = Vector(x,y,z);
 
-    std::cout << std::endl;
+  pugi::xml_node lookat = camera.child("lookat");
+  x = lookat.attribute("x").as_double();
+  y = lookat.attribute("y").as_double();
+  z = lookat.attribute("z").as_double();
+  this->lookAt = Vector(x,y,z);
+
+  pugi::xml_node lights = scene.child("lights");
+
+  double r,g,b;
+  for (pugi::xml_node light = lights.first_child(); light; light = light.next_sibling()){
+  	pugi::xml_node lightPosition = light.child("position");
+  	x = lightPosition.attribute("x").as_double();
+  	y = lightPosition.attribute("y").as_double();
+  	z = lightPosition.attribute("z").as_double();
+  	Vector vLightPosition = Vector(x, y, z);
+
+  	pugi::xml_node lightColor = light.child("color");
+  	r = lightColor.attribute("r").as_double();
+  	g = lightColor.attribute("g").as_double();
+  	b = lightColor.attribute("b").as_double();
+
+  	Color cLightColor = Color(r, g, b, 0.0);
+
+  	sources.push_back(dynamic_cast<Source*>(new Light(vLightPosition,cLightColor)));
   }
-    //]
-
-    std::cout << std::endl;
-
-  */
 
 }
 
@@ -64,9 +83,26 @@ double Loader::getThreshold(){
 string Loader::getModelName(){
 	return this->modelName;
 }
+
 string Loader::getAuthor(){
 	return this->author;
 }
+
 string Loader::getDate(){
 	this->date;
 }
+
+Vector Loader::getCameraPosition(){
+	return this->camPos;
+}
+
+Vector Loader::getLookAt(){
+	return this->lookAt;
+}
+/*
+void Loader::getLightSources(const vector<Source*> lSources){
+	for(int i = 0; i < this->lightSources.size(); i++){
+		Light light = this->lightSources.at(i)->clone();
+		lSources.push_back(light);
+	}
+}*/

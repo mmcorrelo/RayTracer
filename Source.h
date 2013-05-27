@@ -12,7 +12,5 @@ public:
 	virtual Vector getLightPosition();
 	virtual Vector getLightDirection();
 	virtual Color  getLightColor();
-	
-
 };
 #endif

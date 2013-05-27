@@ -14,7 +14,6 @@ public:
 
 	virtual Vector getLightPosition(){ return position;}
 	virtual Color getLightColor(){ return color;}
-
 };
 #endif
 
