@@ -7,6 +7,9 @@
 #include "Object.h"
 #include "Source.h"
 #include "Light.h"
+#include "Plane.h"
+#include "Sphere.h"
+#include "Triangle.h"
 #include "libs/pugixml.hpp"
 #include <fstream>
 #include <sstream>
@@ -28,9 +31,8 @@ class Loader{
 	string date;
 	Vector camPos;
 	Vector lookAt;
-	vector<Source*> lightSources;
 public:
-	Loader(const char*,vector<Source*>&);
+	Loader(const char*, vector<Object*>&, vector<Source*>&);
 	int getWidth();
 	int getHeight();
 	int getDpi();
@@ -43,7 +45,6 @@ public:
 
 	Vector getCameraPosition();
 	Vector getLookAt();
-	//void getLightSources();
 };
 
 #endif

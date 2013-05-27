@@ -17,22 +17,46 @@
 			<position x="-7.0" y="10.0" z="-10.0"/>
 			<color r="1.0" g="1.0" b="1.0"/>
 		</light>
-
 	</lights>
 
-
 	<objects>
-		<plane distance="-1.0"><normal>0.0 1.0 0.0</normal><color>1.0 1.0 1.0 2.0</color></plane>
-		<sphere radius="1.0"><center>0.0 0.0 0.0</center><color>0.5 1.0 0.5 0.3</color></sphere>
-		<sphere radius="0.75"><center>2.0 0.0 0.0</center><color>0.5 0.25 0.25 0.1</color></sphere>
-		<sphere radius="0.8"><center>-1.0 0.5 -2.0</center><color>0.5 0.25 0.25 0.1</color></sphere>
 
-		<triangle>
-			<point>3.0 0.0 0.0</point>
-			<point>0.0 3.0 0.0</point>
-			<point>0.0 0.0 3.0</point>
-			<color>0.94 0.75 0.31 0.3</color>
-		</triangle>
+		<planes>
+			<plane distance="-1.0">
+				<normal x="0.0" y="1.0" z="0.0"/>
+				<color r="1.0" g="1.0" b="1.0" special="2.0"/>
+			</plane>
+			<plane distance="-1.0">
+				<normal x="0.0" y="1.0" z="0.0"/>
+				<color r="1.0" g="1.0" b="1.0" special="2.0"/>
+			</plane>
+		</planes>
 
+		<spheres>
+			<sphere radius="1.0">
+				<center x="0.0" y="0.0" z="0.0"/>
+				<color r="0.5" g="1.0" b="0.5" special="0.3"/>
+			</sphere>
+
+			<sphere radius="0.75">
+				<center x="2.0" y="0.0" z="0.0"/>
+				<color r="0.5" g="0.25" b="0.25" spacial="0.1"/>
+			</sphere>
+
+			<sphere radius="0.8">
+				<center x="-1.0" y="0.5" z="-2.0"/>
+				<color r="0.5" g="0.25" b="0.25" special="0.1"/>
+			</sphere>
+		</spheres>
+
+		<triangles>
+			<triangle>
+				<point x="3.0" y="0.0" z="0.0"/>
+				<point x="0.0" y="3.0" z="0.0"/>
+				<point x="0.0" y="0.0" z="3.0"/>
+				<color r="0.94" g="0.75" b="0.31" special="0.3"/>
+			</triangle>
+		</triangles>
 	</objects>
+	
 </scene>

@@ -68,10 +68,11 @@ void makeCube(Vector corner1, Vector corner2, Color color){
 */
 int main(int argv, char *argc[]){
   std::vector<Source*> lightSources;
-  cout << "rendering ..." << endl;
-  Loader *config = new Loader("models/model1.xml",lightSources);
+  std::vector<Object*> sceneObjects;
 
-  cout << "Size: " << lightSources.at(0)->getLightDirection().getVectorY() << endl;
+  cout << "rendering ..." << endl;
+  Loader *config = new Loader("models/model1.xml", sceneObjects, lightSources);
+
  // exit(0);
   //window thing
   //clock_t t1, t2;
@@ -87,7 +88,7 @@ int main(int argv, char *argc[]){
   int n = width * height;
 
   RGBType *pixels = new RGBType[n];
-  std::vector<Object*> sceneObjects;
+  
 
   int aadepth = config->getDepth();//for multisampling thing
   double aaThreshold = config->getThreshold();
@@ -98,12 +99,6 @@ int main(int argv, char *argc[]){
   double ambientLight = 0.2;
   double accuracy = 0.00000001;
 
-
-  Vector O (0,0,0);
-  Vector X (1,0,0);
-  Vector X1 (2,0,0);
-  Vector Y (0,1,0);
-  Vector Z (0,0,1);
 
 
   Vector camPos = config->getCameraPosition();
@@ -122,30 +117,7 @@ int main(int argv, char *argc[]){
   Color marron (0.5, 0.25, 0.25, 0.1);
   Color tileFloor (1.0, 1.0, 1.0, 2.0);
   Color orange (0.94, 0.75, 0.31, 0.3);
-
-  //Vector lightPosition (-7, 10, -10);
-  //Light sceneLight (lightPosition, whiteLight);
-  //Light sceneLight2 (Vector(7, 10, -10), whiteLight);
-
  
- // config->getLightSources(lightSources);
-  //lightSources.push_back(dynamic_cast<Source*>(&sceneLight));
-  //lightSources.push_back(dynamic_cast<Source*>(&sceneLight2));
-
-  //scene objects
-  Sphere sphere(O, 1, prettyGreen);
-  Sphere sphere2 (X1, 0.75, marron);
-  Sphere sphere3 (Vector(-1, 0.5, -2), 0.8, marron);
-  Plane plane(Y, -1.0, tileFloor);
-  //Plane plane2(Vector(1,0,0), -10.0, marron);
-  Triangle triangle (Vector(3.0, 0.0, 0.0), Vector(0.0, 3.0, 0.0),Vector(0.0, 0.0, 3.0), orange);
-
-  
-  sceneObjects.push_back(dynamic_cast<Object*>(&sphere));
-  sceneObjects.push_back(dynamic_cast<Object*>(&plane));
-  sceneObjects.push_back(dynamic_cast<Object*>(&sphere2));
-  sceneObjects.push_back(dynamic_cast<Object*>(&sphere3));
-//  sceneObjects.push_back(dynamic_cast<Object*>(&triangle));
 
   //makeCube(Vector(1.0, 1.0, 1.0), Vector(-1.0, -1.0, -1.0), orange);
   int thisone, aa_index;
