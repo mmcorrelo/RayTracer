@@ -41,44 +41,44 @@ void makeCube(Vector corner1, Vector corner2, Color color){
   Vector E (c1x, c2y, c1z);
   Vector F (c1x, c2y, c2z);
 
-  //left side 
+  //left side
   sceneObjects.push_back(new Triangle(D, A, corner1, color));
   sceneObjects.push_back(new Triangle(corner1, E, D, color));
 
   //far side
-  sceneObjects.push_back(new Triangle(corner2, B, A, color));  
+  sceneObjects.push_back(new Triangle(corner2, B, A, color));
   sceneObjects.push_back(new Triangle(A, D, corner2, color));
 
   //right side
-  sceneObjects.push_back(new Triangle(F, C, B, color));  
+  sceneObjects.push_back(new Triangle(F, C, B, color));
   sceneObjects.push_back(new Triangle(B, corner2, F, color));
 
   //front side
-  sceneObjects.push_back(new Triangle(E, corner1, C, color));  
+  sceneObjects.push_back(new Triangle(E, corner1, C, color));
   sceneObjects.push_back(new Triangle(C, F, E, color));
 
   //top side
-  sceneObjects.push_back(new Triangle(D, E, F, color));  
+  sceneObjects.push_back(new Triangle(D, E, F, color));
   sceneObjects.push_back(new Triangle(F, corner2, D, color));
 
   //bottom side
-  sceneObjects.push_back(new Triangle(corner1, A, B, color));  
+  sceneObjects.push_back(new Triangle(corner1, A, B, color));
   sceneObjects.push_back(new Triangle(B, C, corner1, color));
 }
 */
 int main(int argv, char *argc[]){
   std::vector<Source*> lightSources;
   std::vector<Object*> sceneObjects;
-  
+
   cout << "rendering ..." << endl;
   Loader *config = new Loader("models/model1.xml", sceneObjects, lightSources);
   //window thing
   //clock_t t1, t2;
   //t1 = clock();
-  
+
   //linux thing
   timeval t1, t2 ;
-  gettimeofday(&t1,0);  
+  gettimeofday(&t1,0);
 
   int dpi = config->getDpi();
   int width = config->getWidth();
@@ -86,11 +86,11 @@ int main(int argv, char *argc[]){
   int n = width * height;
 
   RGBType *pixels = new RGBType[n];
-  
+
 
   int aadepth = config->getDepth();//for multisampling thing
   double aaThreshold = config->getThreshold();
- 
+
 
 
   double aspectRatio = (double) width / (double) height;
@@ -125,7 +125,7 @@ int main(int argv, char *argc[]){
 
   //makeCube(Vector(1.0, 1.0, 1.0), Vector(-1.0, -1.0, -1.0), orange);
   int thisone, aa_index;
-  double xamnt, yamnt; 
+  double xamnt, yamnt;
   double tempRed, tempGreen, tempBlue;
 
 
@@ -135,13 +135,13 @@ int main(int argv, char *argc[]){
 
       //start the blank pixel
       double tempRed[aadepth*aadepth];
-      double tempGreen[aadepth*aadepth];    
+      double tempGreen[aadepth*aadepth];
       double tempBlue[aadepth*aadepth];
 
-          
+
       for (int aax = 0; aax < aadepth; aax++) {
-        for (int aay = 0; aay < aadepth; aay++) {    
-          
+        for (int aay = 0; aay < aadepth; aay++) {
+
           aa_index = aay * aadepth + aax;
 
            srand(time(0));
@@ -191,13 +191,13 @@ int main(int argv, char *argc[]){
 
           std::vector<double> intersections;
           //find instersection for each object scene
-              
+
           for (int index = 0; index < sceneObjects.size(); index++){
             intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
           }
 
           int indexOfWinningObject = Util::winningObjectIndex(intersections);
-    
+
           if (indexOfWinningObject < 0.0){
           //set background black
 
@@ -205,11 +205,11 @@ int main(int argv, char *argc[]){
             tempGreen[aa_index] = 0.0;
             tempBlue[aa_index] = 0.0;
           }
-          else{      
+          else{
           // index corresponds to object in our scene
             if (intersections.at(indexOfWinningObject) > accuracy){
             //determine the position and direction vectors at the point of intersection
-                  
+
               Vector intersectionPosition = cameraRayOrigin.add(cameraRayDirection.mult(intersections.at(indexOfWinningObject)));
               Vector intersectionRayDirection = cameraRayDirection;
 
@@ -219,7 +219,7 @@ int main(int argv, char *argc[]){
               tempGreen[aa_index] = intersectionColor.getColorGreen();
               tempBlue[aa_index] = intersectionColor.getColorBlue();
             }
-          }     
+          }
         }
       }
       //average the pixel color
@@ -228,12 +228,12 @@ int main(int argv, char *argc[]){
       double totalBlue = 0;
 
       for (int indexColor = 0; indexColor < aadepth * aadepth; indexColor++){
-        totalRed = totalRed + tempRed[indexColor]; 
+        totalRed = totalRed + tempRed[indexColor];
         totalGreen = totalGreen + tempGreen[indexColor];
         totalBlue = totalBlue + tempBlue[indexColor];
       }
 
-      double avgRed = totalRed / (aadepth * aadepth); 
+      double avgRed = totalRed / (aadepth * aadepth);
       double avgGreen = totalGreen / (aadepth * aadepth);
       double avgBlue = totalBlue / (aadepth * aadepth);
 
@@ -250,11 +250,11 @@ int main(int argv, char *argc[]){
   //windows thing
   //t2 = clock();
   //float diff = ((float) t2 - (float) t1);
-  
+
   //linux thing
   gettimeofday(&t2,0);
   float diff = t2.tv_sec - t1.tv_sec;
-  
+
   cout << diff << " seconds" << endl;
 
   return 0;

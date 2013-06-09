@@ -1,0 +1,308 @@
+%
+% Hello! Here's how this works:
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook at
+% http://en.wikibooks.org/wiki/LaTeX
+% is a great place to start, and there are some examples in this
+% document, too.
+%
+% We're still in beta. Please leave some feedback using the link at
+% the top left of this page. Enjoy!
+%
+\documentclass[12pt]{article}
+
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{listings}
+
+\title{Parallel Split Shadow Maps}
+\author{Miguel Correlo \\
+\small{pg22780}\\
+\and Pedro Esteves \\
+\small{pg22755}\\
+\and Tiago Coelho \\
+\small{pg20683}}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{blue!40!black},
+  commentstyle=\itshape\color{green!40!black},
+  identifierstyle=\color{black},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{customasm}{
+  belowcaptionskip=1\baselineskip,
+  frame=L,
+  xleftmargin=\parindent,
+  language=[x86masm]Assembler,
+  basicstyle=\footnotesize\ttfamily,
+  commentstyle=\itshape\color{green!40!black},
+}
+
+\lstset{escapechar=@,style=customc}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Os shadow maps é uma técnica de renderização amplamente 
+utilizada para a geração de sombras de superfícies em tempo real. No 
+entanto, devido á sua natureza de amostragem, apresenta dois problemas de difícil 
+resolução. Aparência das bordas das sombras com aspeto de "dentes de serra" ({\it aliasing}). E a {\it surface acne} ou {\it self-shadow} que faz parecer um objeto
+"chamuscado". A dimensão destes problemas pode ser reduzida com a aplicação de técnicas como a {\it Trapezoidal} ou {\it Parallel Split Shadow Maps}. Entre muitas outras técnicas de {\it anti-aliasing} como {\it Percentage Closer Filtering}, {\it Light-Space Perspective}, {\it Variance}, {\it Convolution}, {\it Exponencial} e ainda {\it Remix Approach} que faz recurso de alguns dos algoritmos anteriores. No entanto, este documento irá focar essencialmente nos {\it Parallel Split Shadow Maps} e fazer referência às {\it Trapezoidal Shadow Maps}.
+
+
+\end{abstract}
+
+\section{Introdução}
+\vspace{10 mm}
+\hspace{8 mm}Um dos algoritmos para cálculo  de sombras mais eficiente existente atualmente é o {\it Shadow Mapping}. Este é simples, robusto e facilmente mapeável para o {\it hardware} gráfico atual. Este algoritmo passa essencialmente por duas etapas. A primeira é responsável pela geração de um {\it depth buffer} ({\it Shadow Map}) a partir de um ponto do ponto de vista da luz. Na segunda etapa a imagem final da cena é gerada a partir do ponto de vista da câmara. De modo a determinar se os {\it pixels} da imagem final estão iluminados ou em sombra, cada {\it pixel} é transformado para o espaço da luz e testado contra o {\it Shadow Map}. O resultado deste teste é então usado para atenuar a cor final do {\it pixel}, calculada de acordo com as propriedades da superfície e o modelo de iluminação utilizado.\\
+
+Apesar de bastante eficiente e robusto, o algoritmos de {	\it Shadow Mapping} apresenta exigências e limitações que devem ser consideradas no momento da
+sua utilização. Para além do facto, da estrutura do {\it Shadow Map} exigir um espaço extra memória. A sua geração sofre problemas relacionados à quantização e amostragem.\\
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.70]{1.png}
+\caption{Primeiro passo do algoritmo de {\it Shadow Mapping}: geração de {\it Shadow Map} a partir do ponto de vista da luz}
+\label{img1}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.70]{2.png}
+\caption{Segundo passo do algoritmo de {\it Shadow Mapping}: geração da imagem final a partir do ponto de vista da câmara. Cada ponto gerado pela
+câmara é testado contra o {\it Shadow Map} para a determinação da sombra}
+\label{img1}
+\end{figure}
+
+O primeiro problema refere-se à quatização dos valores de profundidade a serem registados nas células do {\it Shadow Map}, e está intimamente ligado à precisão numérica disponível para tal. Um {\it pixel} de cena final que está iluminado é visível a partir do ponto de vista da luz, e a porção da superfície da qual faz parte está registada em alguma célula do {\it Shadow Map}. Durante a geração da cena final esse {\it pixel} será transformado para o sistema de coordenadas da luz. Essa transformação entre sistemas de coordenadas implica uma série de operações aritméticas que, em conjunto com a imprecisão numérica inerente à computação, pode introduzir pequenos erros nos valores das suas coordenadas. A introdução desses erros pode eventualmente fazer com que o {\it pixel}, depois de transformado, situe-se um pouco abaixo da superfície a qual pertence, sendo avaliado incorretamente como estando em sombra. Os efeitos deste {\it self-shadow} são percebidos visualmente como pontos escuros na imagem final.\\
+
+Uma solução proposta por Williams, o idelista do conceito dos {\it Shadow Maps} em 1978, para reduzir os efeitos de {\it self-shadow}, foi a subtração de um pequeno valor de {\it bias} das coordenadas de {\it z} dos {\it pixels}, já no espaço luz. O valor deste {\it bias} é determinado de forma empírica, é igual para todos os {\it pixels} da imagem final e dependente de uma série de fatores. Alguns dos fatores que podem interferir na definição do valor do {\it bias} demasiadamente grandes pode causar um perceptível deslocamento da sombra da cena. O aumento da precisão numérica dos elementos do {\it Shadow Map} geralmente permite a utilização de {\it bias} menores.\\
+
+O segundo problema na geração do {\it Shadow Map} refere-se a si própria discretização da cena, estando relacionado ao tipo de amostragem feita e a resolução espacial do {\it Shadow Map}. A resolução pode em alguns casos não ser suficiente para o registo de algumas regiões da cena, resultando uma perda de informação. A regularidade com que é feita a amostragem da cena também pode causar alguns efeitos indesejáveis, tais como {\it aliasing}.
+Soluções a estes problemas seriam, respetivamente, o aumento da resolução do {\it Shadow Map}, com um consequente aumento no consumo de memória, e a amostragem estocástica da cena, que resultariam em um aumento do custo computacional.\\
+
+Um terceiro problema está relacionado à amostragem do {\it Shadow Map} no momento da realização dos teste de sombra. Esse problema pode ser observado na imagem final através da zona com forma de "dentes de serra" nas bordas das sombras. Embora no aumento da resolução do {\it Shadow Map} ajude a minimizar esse efeito, na maioria das vezes não é possível prever qual a resolução necessária para a geração de sombras sem {\it aliasing} nas bordas. Este problema torna-se mais evidente nas cenas dinâmicas onde existem movimento de objetos, pontos de luz ou câmaras. A {\it figura 3} apresenta o detalhe de uma imagem onde pode ser observada a presença de {\it aliasing} na borda da sombra gerada através de {\it Shadow Mapping}.\\
+
+Problemas relacionados com {\it aliasing} são tradicionais em procedimentos onde existe a necessidade de se amostrar imagens, e geralmente são tratados através de outros algoritmos de refinamentos, como será abordado nos capítulos seguintes.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.70]{3.png}
+\caption{Detalhe da imagem: presença de {\it aliasing} na borda da sombra gerada através de {\it Shadow Mapping}}
+\label{img3}
+\end{figure}
+ 
+
+
+
+
+Os {\it Shadow Maps} normalmente armazenam apenas um valor de profundidade por célula, fazendo com que os testes de sombra retornem valores binários. Isto pode fazer surgir {\it aliasing} nas bordas das sombras.
+\newpage
+
+\section{Trapezoidal Shadow Maps}
+\vspace{10 mm}
+\hspace{7 mm}Martin e Tan criaram {\it Trapezoidal Shadow Maps} (MARTIN; TAN, 2004), que trabalha no espaço pós-projeção. Eles observaram que uma das causas do {\it aliasing} é o desperdício da resolução do {\it Shadow Map} sobre regiões do universo que não estão no campo de visão da câmara. \\
+
+A solução proposta faz com que o volume de visualização da fonte de luz se ajuste geometricamente ao volume de visualização da câmara, como visto pela fonte de luz em seu espaço pós-projeção, é envolvido por um trapézio. Esse trapézio definerá o formato do novo {\it Shadow Map}. Um ponto da cena, para ser testado contra este novo {\it Shadow Map}, deve ser transformado para esse novo espaço trapezoidal. \\
+
+O método apresenta boa performace, e pode ser implementado em {\it hardware}. Problemas de amostragem relacionados com desperdício de resolução do {\it Shadow Map} são minimizados. O método não resolve os problemas de amostragem advindos do duelo entre as direções de visualização de volumes.
+
+\section{Parallel-Split Shadow Maps (PSSMs)}
+\vspace{10 mm}
+\hspace{7 mm}A técnica que irá ser apresentada de {\it shadow mapping} denomina-se por {\it parallel-split shadow maps (PSSMs)} (Zhang et al. 2007 and Zhang et al. 2006). Esta técnica é aplicada sobre o {\it view fustrum} ao qual é divido em multiplos {\it layers} de profundidade usando planos paralelos, onde  em cada {\it layser} será renderazado um {\it shadow map} independente como se pode ver na {\it figura 4}.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.90]{4.png}
+\caption{{\it Parallel-Split Shadow Maps}}
+\label{img4}
+\end{figure}
+
+
+O esquema de divisão baseia-se na observação a partir da vista da câmara a diferentes distâncias. Necessariamente irá-se recorrer a diferentes {\it shadow maps} com variação nas densidade de amostragem. Ao dividir o {\it view fustrum} em partes o {\it shadow map} abrange uma área menor, aumentando a frequência de amostragem na textura. Com uma amostragem mais adquada os erros de {\it aliasing} são significativamente reduzidos.\\
+
+Quando comparamos com outras técnicas de {\it  shadow-mapping}, como {\it perspective shadow maps} (PSMs) (Stamminger and Drettakis 2002), {\it light-space perspective shadow maps} (LiSPSMs) (Wimmer et al. 2004) e {\it trapezoidal shadow maps} (TSMs) (Martin and Tan 2004), temos discretamente uma distribuição distorcida dos {\it shadow-map texels}, mas sem singularidades de mapeamento e tratamentos especiais.\\
+
+A ideia de usar multiplos {\it shadow maps} foi introduzida por Tadamura et al. 2001. No entanto este algoritmo PSSMs, possui dois problemas. Primeiro tornase complicado determinar a posição dos diferentes {\it layers}. Depois o "processamento" dos diversos passos desde a geração dos {\it shadow maps} até a apresentação da cena final provoca um decrescimo da performance de renderização.
+
+\subsection{Algoritmo}
+\vspace{10 mm}
+\hspace{7 mm} A título de exemplo explicativo vai-se usar luzes direcionais para demostrar a técnica dos PSSMS mais evidentemente, mas em questão de implementação são válidos também os focos de luz. A notação utilizada para demostração é PSSM(m, res) que representa o esquema de divisão do {\it  view frustum} em {\it m} partes e {\it res} é a resolução de cada {\it shadow map}.\\
+
+A {\it figura 5} de um modo geral demostra como se divide o {\it view frustum} do ponto de vista da luz. Onde o {\it view frustum} \textbf{V} é dividido em 
+$\{V_i  |  0 \le i \le m-1 \}$  e os planos de corte são $\{C_i  |  0 \le i \le m\} $ ao longo do eixo do \textbf{z}. E, $C_0 = n$ ({\it near plane}) e $C_m = f$ ({\it far plane})
+
+\vspace{2 mm}
+ Os passos para construir um  PSSM(m, res) são os seguintes:
+\begin{enumerate}
+  \item Dividir o {\it view frustum} \textbf{V} em \textbf{m} partes \{$V_i$\} usando \{$C_i$\} planos de corte.
+  \item Calcular a partir da vista da luz a matriz de transformação para cada uma das partes $V_i$
+  \item Gerar as PSSMs \{$T_i$\} para a resolução {\it res} para todas as \textbf{m} partes, \{$V_i$\}
+  \item Apresentar as sombras na cena
+\end{enumerate}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.90]{5.png}
+\caption{Esquema de fragmentação do {\it view frustum} com vista a partir da luz}
+\label{img5}
+\end{figure}
+
+
+\subsubsection{Fragmentar o View fustrum}
+
+\vspace{7 mm}
+\hspace{7 mm}O principal problema no \textbf{passo 1} é determinar onde vão ser feitas as divisões no {\it view fustrum}. Embora que na prática o mais acertado será ajustar os diferentes {\it layers} de corte do {\it view fustrum} de acordo com os requesitos e os resultados que se esperam da aplicação. Quanto é importante ter o máximo detalhe das sombras renderizadas.\\
+
+Mas antes de abordarmos o problema do esquema de fragmentação do {\it view fustrum}, irá-se de forma breve rever o problema de {\it aliasing} dos {\it shadow map}. Na {\it figura 6} os feixes de luz passam atravéz  de um {\it texel} (com o comprimento $ds$) e tocam na superficie do objeto com o tamanho $dz$ no espaço do mundo. \\
+
+Sabendo que comprimento visto do lado da luz da zona de contato dos feixes é $ds$ que são projetados desde a superfície do objeto que está a $dy(z \tan \phi)^{-1}$ onde $2\phi$ é o campo de visão no {\it view fustrum}. Desde o local de visão da superficie na {\it figura 6}, consegue-se uma aproximação  $dy \approx dz \frac{\cos \phi}{\cos \theta} $,  onde $\phi$ e $\theta$ são os ângulos entre o vector surperfíe do objeto e o ponto da câmara, e respetivamente o plano do {\it shadow map}.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.90]{6.png}
+\caption{{\it Shadow map aliasing}}
+\label{img6}
+\end{figure}
+\vspace{7 mm}
+
+\subsubsection{Shadow Map Aliasing}
+
+Os erros de {\it aliasing} entre pequenas superfícies são relacionados a partir da seguinte formula:
+
+$$ \frac{dp}{ds} = \frac{1}{\tan \phi} \frac{dz}{zdz} \frac{\cos \phi}{\cos \theta}.$$
+
+Normalmente a representação da fórmula de {\it aliasing} é decomposta em duas partes: {\it perpective aliasing} $\frac{dz}{zdz}$ e {\it projection aliasing} $\frac{\cos \phi}{\cos \theta}$ ($\theta$ é uma constante dada pela {\it view matrix}). O {\it shadow map undersampling} ocorre quando o {\it perpective aliasing} ou o {\it projection aliasing} tomam valores grandes. \\
+
+O {\it perpective aliasing} depende do detalhe local dos objetos, para a redução deste tipo de {\it aliasing} requer-se uma análise do cenário pesada em cada divisão. 
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=1]{7.png}
+\caption{Visão prática do esquema de divisão do {\it Shadow map}}
+\label{img7}
+\end{figure}
+
+
+\newpage
+\subsubsection{Transformação das matrizes a partir da vista da luz}
+
+\vspace{7 mm}
+\hspace{7 mm}Nos tradicionais {\it shadow mapping} precisamos de saber a posição da luz e as matrizes de projeção quando geramos o {\it shadow map}. Mas como se divide o {\it light's frustum} $W$ em diversos {\it subfrusta}$\{W_i\}$, é necessário construir uma matriz de projeção independente para cada $W_i$ separadamente.\\
+
+A seguir serão apresentados dois métodos para calcular essas matrizes:
+\begin{itemize}
+  \item O método de cenas independentes ou {\it scene-independent} na literatura inglesa, simplesmente envolve o {\it light's frustum} $W_i$ ao plano de corte $V_i$, como se mostra a {\it figura 8}. No entanto a informação sobre a cena toda não é utilizada que o pode levar a um uso não rentabilizado da resolução do {\it shadow map}.
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.8]{8.png}
+\caption{Cálculo do {\it Light's Projection Matriz}}
+\label{img8}
+\end{figure}
+\newpage
+\item O método {\it scene-dependent} incrementa a resolução disponível na textura dando foco ao {\it light's frustum } $W_i$  onde os objetos estão potencialmente em sombra para o {\it split fustrum} $V_i$, como se pode ver na {\it figura 9}
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.8]{9.png}
+\caption{Métodos de comparação da projeção}
+\label{img9}
+\end{figure}
+\end{itemize}
+
+\subsubsection{Geração dos Shadow Maps}
+
+Uma vez que temos a matriz de transformação da {\it light's view-projection}, $lightViewMatrix * lightProjMatrix * cropMatrix$ para cada fragmento {\it view frustum}, pode-se fazer o {\it render} para a textura do {\it shadow map} associado. O procedimento é o mesmo que o tradicional {\it shadow mapping}. É feito o render de todas as sombras para o {\it depth buffer}.\\
+
+Na implementação de múltiplos passos, em vez de armazenar os PSSMs em vários {\it shadow maps}, é reutilizado um único {\it shadow map texture} para cada passo de {\it rendering}. Onde se pode analisar no seguinte pseudo-código:\\
+\begin{lstlisting}
+for(int i = 0; i < numSplits; i++)  {  
+  // Compute frustum of current split part.  
+  splitFrustum = camera->CalculateFrustum(splitPos[i], splitPos[i+1]);  
+  casters = light->FindCasters(splitFrustum);  
+  // Compute light's transformation matrix for current split part.  
+  cropMatrix = light->CalculateCropMatrix(receivers, casters,  splitFrustum);  
+  splitViewProjMatrix = light->viewMatrix * light->projMatrix *  cropMatrix;  
+  // Texture matrix for current split part  
+  textureMatrix = splitViewProjMatrix * texScaleBiasMatrix;    
+  // Render current shadow map.  
+  ActivateShadowMap();  
+  RenderObjects(casters, splitViewProjMatrix);  
+  DeactivateShadowMap();  
+  // Render shadows for current split part.  
+  SetDepthRange(splitPos[i], splitPos[i+1]);  
+  SetShaderParam(textureMatrix);  
+  RenderObjects(receivers, camera->viewMatrix * camera->projMatrix);  
+}
+\end{lstlisting}
+\newpage
+\subsection{Apresentar as sombras na cena}
+\vspace{7 mm}
+\hspace{7 mm}
+Com PSSMs gerados na etapa anterior, as sombras podem agora ser apresentadas na cena. No método multi-faseado, devemos apresentar as sombras imediatamente após o{\it rendering} do {\it shadow map}.\\
+
+Para um melhor desempenho, deve-se fazer {\it render} às divisões da frente para trás. No entanto, algumas considerações especiais devem ser consideradas. É necessário ajustar os {\it near plane} e o {\it far plane} para as respetivas posições de corte das partições do {\it view fustrum}, uma vez que os objetos numa divisão também se podem sobrepor nas outras divisões. \\
+
+No entanto, ao ajustar  {\it near plane} e o {\it far plane}  do {\it view fustrum}, também alteraria o intervalo de valores escritos no {\it depth buffer}. Isto faria com que os testes de profundidade não funcionacem corretamente. Para evitar esse problema usa-se um {\it depth range} diferente no {\it viewport}. Simplemente converte-se as coordenadas do plano de corte do {\it view space} para o {\it clip space} e passa-se a usar um novo mínimo e máximo de profundidade.
+\vspace{ 7 mm}
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.8]{10.png}
+\label{img10}
+\end{figure}
+
+\subsection{Conclusões}
+\vspace{7 mm}\hspace{7 mm}
+O shadow Mapping baseia-se na imagem vista da luz, o que torna independente da complexidade da cena. O que tornou esta técnica muito utilizada em renderização de imagem em tempo real. No entanto como vimos esta técnica sofre de algumas limitações na forma como apresenta as sombras na cena. Para tentar corrigir algumas das limitações do {\it shadow map} tradicional, outras técnicas de elaboração de sombras surgiram. Nomeadamente as {\it Parallel-Split Shadow Maps} (PSSM's). Não resolve todos os problemas mas pelo menos atenua alguns deles.\\
+
+Para paliar o aliasing o PSSM usa vários shadow maps. Vimos que aumentar a resolução do {\it shadow maps} ajuda a diminuir a crenelagem, mas se tivessemos um terreno com 1km de lado usando uma textura de 1024x1024, cada texel representa 1m\dots \\
+
+A técnica dos {\it Parallel-Split Shadow Maps} divide-se em quatro grandes passos na fase de implementação: 
+dividir o {\it view frustrum} em diferentes partes em relação a profundidade,
+dividir o {\it light frustrum} em diferentes partes em relação a profundidade, encaixando-se nas partes do {\it view frustrum},
+o {\it render} de um {\it shadow maps} para cada {\it split} e finalmente, {\it render} da cena obtendo as sombras.\\
+
+Para cada {\it render} é necessário um passo, mas o hardware já esta preparado para tratar os diferentes {\it shadow map} num só passo o que na realidade só precisamos de dois passos para obter uma boa qualidade de {\it shadows casts}. \\
+
+Um dos problemas analisado neste tipo de implementação de sombras é decidir onde vão recair os cortes no {\it view fustrum} de modo a rentabilizar os {\it buffers} e obter melhor detalhe na cena final. Mas isso caberá decidir quão importante é esse detalhe da sombra na cena final.
+
+\subsection{Referências}
+
+[1] Parallel-Split Shadow Maps for Large-scale Virtual Environments, da autoria de Fan Zhang, Hanqiu Sun, Leilei Xu, Lee Kit Lun \newline
+[2] Cascaded Shadow Maps, autoria de Rouslan Dimitrov, NVidea Corporation \newline
+[3] Sombras CG LEI, slides, autoria de António Ramires Fernandes \newline
+[4] Notes On Implementation Of Trapezoidal Shadow Maps, autoria de Eugene K. Ressler \newline
+[5] http://http.developer.nvidia.com/ \newline
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+

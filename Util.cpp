@@ -3,7 +3,7 @@
 int Util::winningObjectIndex(std::vector<double> object_intersections){
    // return the index of the winning intersection
   int indexOfMinimumValue;
-  
+
   // prevent unnessary calculations
   if (object_intersections.size() == 0) {
     // if there are no intersections
@@ -22,14 +22,14 @@ int Util::winningObjectIndex(std::vector<double> object_intersections){
   else {
     // otherwise there is more than one intersection
     // first find the maximum value
-    
+
     double max = 0;
     for (int i = 0; i < object_intersections.size(); i++) {
       if (max < object_intersections.at(i)) {
         max = object_intersections.at(i);
       }
     }
-    
+
     // then starting from the maximum value find the minimum positive value
     if (max > 0) {
       // we only want positive intersections
@@ -39,7 +39,7 @@ int Util::winningObjectIndex(std::vector<double> object_intersections){
           indexOfMinimumValue = index;
         }
       }
-      
+
       return indexOfMinimumValue;
     }
     else {
@@ -61,7 +61,7 @@ void Util::savebmp(const char *filename, int w, int h, int dpi, RGBType *data){
   int ppm = dpi*m;
   unsigned char bmpfileheader[14] = {'B','M', 0,0,0,0, 0,0,0,0, 54,0,0,0};
   unsigned char bmpinfoheader[40] = {40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0,24,0};
- 
+
   bmpfileheader[ 2] = (unsigned char) (filesize);
   bmpfileheader[ 3] = (unsigned char) (filesize >> 8);
   bmpfileheader[ 4] = (unsigned char) (filesize >> 16);
@@ -113,7 +113,7 @@ void Util::savebmp(const char *filename, int w, int h, int dpi, RGBType *data){
 Color Util::getColorAt(Vector intersectionPosition, Vector intersectionRayDirection, std::vector<Object*> sceneObjects, int indexOfWinningObject, std::vector<Source*> lightSources, double accuracy, double ambientLight){
   Color winningObjectColor = sceneObjects.at(indexOfWinningObject)->getColor();
   Vector winningObjectNormal = sceneObjects.at(indexOfWinningObject)->getNormalAt(intersectionPosition);
-  
+
   if (winningObjectColor.getColorSpecial() == 2){
     //checkered/tile floor pattern
     int square = (int) floor(intersectionPosition.getVectorX()) + (int) floor(intersectionPosition.getVectorZ());
@@ -163,9 +163,9 @@ Color Util::getColorAt(Vector intersectionPosition, Vector intersectionRayDirect
         Vector reflectionIntersectionRayDirection = reflectionDirection;
 
         Color reflectionIntersectionColor = getColorAt(reflectionIntersectionPosition, reflectionIntersectionRayDirection, sceneObjects, indexOfWinningObjectWithReflection, lightSources, accuracy, ambientLight);
-      
+
         finalColor = finalColor.add(reflectionIntersectionColor.scalar(winningObjectColor.getColorSpecial()));
-      }   
+      }
     }
 
   }
@@ -182,7 +182,7 @@ Color Util::getColorAt(Vector intersectionPosition, Vector intersectionRayDirect
       float distanceToLightMagnitude = distanceToLight.magnitude();
 
       Ray shadowRay(intersectionPosition, lightSources.at(lightIndex)->getLightPosition().add(intersectionPosition.negative()).normalize());
-      
+
       std::vector<double> secundaryIntersections;
 
       for (int objectIndex = 0; objectIndex < sceneObjects.size() && !shadowed; objectIndex++){
@@ -202,7 +202,7 @@ Color Util::getColorAt(Vector intersectionPosition, Vector intersectionRayDirect
       if(!shadowed){
         finalColor = finalColor.add(winningObjectColor.mult(lightSources.at(lightIndex)->getLightColor()).scalar(cosineAngle));
         if (winningObjectColor.getColorSpecial() > 0.0 && winningObjectColor.getColorSpecial() <= 1.0){
-          // special value between 0 and 1 for the brightness 
+          // special value between 0 and 1 for the brightness
           double dot1 = winningObjectNormal.dot(intersectionRayDirection.negative());
           Vector scalar1 = winningObjectNormal.mult(dot1);
           Vector add1 = scalar1.add(intersectionRayDirection);
@@ -211,7 +211,7 @@ Color Util::getColorAt(Vector intersectionPosition, Vector intersectionRayDirect
           Vector reflectionDirection = add2.normalize();
 
           double specular = reflectionDirection.dot(lightDirection);
-          
+
           if (specular > 0.0){
             specular = pow(specular, 10);
             finalColor = finalColor.add(lightSources.at(lightIndex)->getLightColor().scalar(specular*winningObjectColor.getColorSpecial()));
