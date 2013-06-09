@@ -1,15 +1,15 @@
 #### Raytracer C++.
 
 ##### In this project will be contemplated topics such as:
-##### - First rays*
-##### - Shadows*
-##### - Reflections*
-##### - Refractions
-##### - Anti-aliasing*
-##### - Motion Blur
-##### - Area Lights
-##### - Path Tracing with importance sampling
-##### - Russian roulette
+- First rays*
+- Shadows*
+- Reflections*
+- Refractions
+- Anti-aliasing*
+- Motion Blur
+- Area Lights
+- Path Tracing with importance sampling
+- Russian roulette
 
 ###### *already implemented
 
