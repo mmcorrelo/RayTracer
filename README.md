@@ -8,6 +8,7 @@
 - Anti-aliasing*
 - Motion Blur
 - Area Lights
+- Depth of Field
 - Path Tracing with importance sampling
 - Russian roulette
 
