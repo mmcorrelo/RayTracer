@@ -1,16 +1,17 @@
-This project is a simple Raytracer.
-In this project will be contemplated topics such as:
-- First rays*
-- Shadows*
-- Reflections*
-- Refractions
-- Anti-aliasing*
-- Motion Blur
-- Area Lights
-- Path Tracing with importance sampling
-- Russian roulette
+#### Raytracer C++.
 
-### *already implemented
+##### In this project will be contemplated topics such as:
+- ##### First rays*
+- ##### Shadows*
+- ##### Reflections*
+- ##### Refractions
+- ##### Anti-aliasing*
+- ##### Motion Blur
+- ##### Area Lights
+- ##### Path Tracing with importance sampling
+- ##### Russian roulette
+
+###### *already implemented
 
 For any reason needs to contact me, you cant to correlomm at gmail dot com
 
