@@ -70,7 +70,15 @@ Uma das ideias fundamentais do {\it ray tracing} é precisamente devido à limit
 
 \section{Introdução}
 \vspace{10 mm}
-\hspace{8 mm} asdsada a dsdasd
+\hspace{8 mm} O intuito mais básico do ray tracing, na sua forma elementar, é utiliza-lo em todos sítios onde fosse necessária de alguma forma reproduzir o mundo real que nós vemos para o mundo virtual. No entanto, ainda não é possível essa flexibilidade.\\
+
+O ray tracing tem sido utilizado em ambiente de produção off-line durante algumas décadas até agora. O rendering de uma cena não é necessário terminar em apenas em alguns milisegundos. Porém a evolução da computação e a elaboração de novos algoritmos de renderização permitiu atingir o que agora chamamos de "ray tracing em tempo real". Esta evolução permitiu melhorar certos pormenores na qualidade das reflexões e muitos efeitos que até então eram muitos díficeis de alcançar, agora são bastante naturais usando um ray tracer. Reflexões, refrações, campos de profundidade e sombras de alta qualidade. No entanto, isto não significa que estes pormenores não exigam tempo de computação.\\
+
+A placa gráfica por outro lado, hoje em dia, gera a maioria das imagem mas ainda é muito limitada no ray tracing. Mas não implica que essa limitação seja removida no futuro. A alternativa para o ray tracing nas placas gráficas é o uso da rasterização. A restarização é uma outra forma de abordar a geração de imagens.
+
+A primitiva mais básica na rasterização não são os raios, mas sim os triângulos. Por cada triângulo existente na cena, estima-se a sua convertura no port view
+
+
 
 
 \subsection{Referências}
