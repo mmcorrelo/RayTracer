@@ -1,0 +1,97 @@
+%
+% Hello! Here's how this works:
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook at
+% http://en.wikibooks.org/wiki/LaTeX
+% is a great place to start, and there are some examples in this
+% document, too.
+%
+% We're still in beta. Please leave some feedback using the link at
+% the top left of this page. Enjoy!
+%
+\documentclass[12pt]{article}
+
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{listings}
+
+\title{Implementação de um Ray Tracer}
+\author{Miguel Correlo \\
+\small{pg22780}\\
+\small{correlomm@gmail.com}}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{blue!40!black},
+  commentstyle=\itshape\color{green!40!black},
+  identifierstyle=\color{black},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{customasm}{
+  belowcaptionskip=1\baselineskip,
+  frame=L,
+  xleftmargin=\parindent,
+  language=[x86masm]Assembler,
+  basicstyle=\footnotesize\ttfamily,
+  commentstyle=\itshape\color{green!40!black},
+}
+
+\lstset{escapechar=@,style=customc}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+O {\it ray tracing} é uma das várias técnicas que existem para fazer {\it render} de imagem por compuador. A idéia acente por trás do {\it ray tracing} é reproduzir imagens a partir da realidade física existente no mundo real. As imagens são reproduzidas a partir da luz que geralmente vem de uma fonte luminosa e é decomposta em raios. Os raios são reproduzidos por computador simulando o percurso de um determinado raio que percorre até chegar aos nossos olhos desde de um ponto de luz. Permitindo assim simular de um modo artificial o que o nossos olhos vêm.
+
+É evidente que não é tão simples quanto parece reproduzir essa realidade. É preciso de alguma forma acompanhar esses raios, o que é uma tarefa díficil pois a natureza reproduz essa realidade de um modo infinito o que leva a exigir um poder computacional que não temos à nossa disposição para a simular.
+
+Uma das ideias fundamentais do {\it ray tracing} é precisamente devido à limitação computacional só se preocupar com os raios que atingem os nossos olhos e depois com alguns dos seus ressaltos. A segunda ideia passa pela geração das imagens que são geralmente matrizes de pixeis com uma resolução limitada. As duas ideias anteriores são a base para a implementação deste {\it ray tracer}. Neste trabalho serão abordados tópicos como o lançamento dos primeiros raios, sombras, reflexões, refrações, {\it anti-aliasing, motion blur, area lights, depth of Field, path Tracing with importance sampling e finalmente russian roulette}
+
+
+\end{abstract}
+
+\section{Introdução}
+\vspace{10 mm}
+\hspace{8 mm} asdsada a dsdasd
+
+
+\subsection{Referências}
+
+[1] Parallel-Split Shadow Maps for Large-scale Virtual Environments, da autoria de Fan Zhang, Hanqiu Sun, Leilei Xu, Lee Kit Lun \newline
+[2] Cascaded Shadow Maps, autoria de Rouslan Dimitrov, NVidea Corporation \newline
+[3] Sombras CG LEI, slides, autoria de António Ramires Fernandes \newline
+[4] Notes On Implementation Of Trapezoidal Shadow Maps, autoria de Eugene K. Ressler \newline
+[5] http://http.developer.nvidia.com/ \newline
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
