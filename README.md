@@ -10,7 +10,7 @@ In this project will be contemplated topics such as:
 - Path Tracing with importance sampling
 - Russian roulette
 
--- * already implemented
+# *already implemented
 
 For any reason needs to contact me, you cant to correlomm at gmail dot com
 
