@@ -89,7 +89,42 @@ O ray tracing não é usado sempre, uma vez que a vantagem da rápida renderiza�
 \vspace{10 mm}
 \hspace{8 mm}Os raytracers não oferecem um solução completa, uma vez que não existem soluções completas quando estamos a lidar com o aleatório e o infinito. É muitas vezes uma complicação dicidir o retira a uma imagem o seu realismo. Muitas das vezes, a decisão de tirar milhares de raios por pixel talvez não seja o ideal mesmo que a solução assim o pareça exigir.\newline
 
-A iluminação global é um bom exemplo de isso mesmo. As tecnicas de iluminação global como photo mapping, tenta-se diminuir o caminho entre a luz e a superficie em que estamos. No entando na sua generalidade, para fazer uma boa iluminação global exigiria lancar uma quantidade infinita de raios em todas as direções e ver qual a percentagem desses raios atingiram a luz. Isto pode ser feito mas vai-se refletir na performa-se do algoritmo. Em vez disso, podemos é fazer o contrário, pegando na mesma ideia, mas em sentido inverso, do ponto de vista da luz e ver os que atingiram as superficies. Primeiro usamos essa informação para computar a luz na sua aproximação para cada ponto da superficie. Após esta primeira aproximação só seguimos o raio ou lançamos uma nova quantidade de raios se precisarmos de reproduzir uma reflexão ou refração (um reflexão perfeita só é necessário um raio). No entanto, a reprodução de refleções e refrações pode ter um custo muito elevado o que nos leva a decidir por um limite máximo de {\it depth recursion}.
+\hspace{8 mm}A iluminação global é um bom exemplo de isso mesmo. As tecnicas de iluminação global como photo mapping, tenta-se diminuir o caminho entre a luz e a superficie em que estamos. No entando na sua generalidade, para fazer uma boa iluminação global exigiria lancar uma quantidade infinita de raios em todas as direções e ver qual a percentagem desses raios atingiram a luz. Isto pode ser feito mas vai-se refletir na performa-se do algoritmo. Em vez disso, podemos é fazer o contrário, pegando na mesma ideia, mas em sentido inverso, do ponto de vista da luz e ver os que atingiram as superficies. Primeiro usamos essa informação para computar a luz na sua aproximação para cada ponto da superficie. Após esta primeira aproximação só seguimos o raio ou lançamos uma nova quantidade de raios se precisarmos de reproduzir uma reflexão ou refração (um reflexão perfeita só é necessário um raio). No entanto, a reprodução de refleções e refrações pode ter um custo muito elevado o que nos leva a decidir por um limite máximo de {\it depth recursion}.
+
+\subsection{Primeiros raios}
+\vspace{10 mm}
+\hspace{8 mm} A primeira parte do desenvolvimento deste ray tracer vai fundamentemente basear-se no lançamento dos primeiros raios de colisão com os diferentes objetos da cena. Foram criadas criadas as primeiras classes para os objetos plano, esfera e triângulo. Onde a partir do triângulo então poderá-se construir outros objetos mais complexos. Nesta fase foi também desenvolvida uma class Raio. Uma class auxiliar Vector também foi escrita com papel fundamente na altura de fazer os cálculos adjacentes a vectores.
+Aqui foi preparada toda a estrutura para se poder desenhar uma cena no ecrã. \newline
+
+Primeiro para começar irá ser apresentado um pseudo-código da funcionalidade mais básica desta fase:
+
+\begin{lstlisting}
+for cada pixel of the screen
+{
+  Final color = 0;
+  Ray = { starting point, direction };
+  Repeat
+  {
+    for each object in the scene
+    {
+      determine closest ray object/intersection;
+    }
+    if intersection exists
+    {
+      for each light in the scene
+      {
+        if the light is not in shadow of another object
+        {
+          add this light contribution to computed color;
+        }
+      }
+    }
+    Final color = Final color + computed color * previous reflection factor;
+    reflection factor = reflection factor * surface reflection property;
+    increment depth;
+  } until reflection factor is 0 or maximum depth is reached;
+}
+\end{lstlisting}
 
 \subsection{Referências}
 
