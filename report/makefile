@@ -7,4 +7,4 @@ all: $(FILES)
 	${CC} $(FILES)
 
 clean:
-	rm -rf *.aux *.log *.dvi *.gz
+	rm -rf *.aux *.log *.dvi *.gz *.toc
