@@ -54,4 +54,4 @@ pugixml.o: $(LIBPATH)pugiconfig.hpp $(LIBPATH)pugixml.hpp $(LIBPATH)pugixml.cpp
 			${CC} ${CFLAGS} -c $(LIBPATH)pugixml.cpp
 
 clean:
-	rm -rf *o scene.bmp $(PROG)
+	rm -rf *o scene.bmp

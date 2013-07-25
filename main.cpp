@@ -1,7 +1,7 @@
 
 //linux header
-#include <unistd.h>
-#include <sys/time.h>
+//#include <unistd.h>
+//#include <sys/time.h>
 //------
 
 #include "Util.h"
@@ -73,12 +73,12 @@ int main(int argv, char *argc[]){
   cout << "rendering ..." << endl;
   Loader *config = new Loader("models/model1.xml", sceneObjects, lightSources);
   //window thing
-  //clock_t t1, t2;
-  //t1 = clock();
+ // clock_t t1, t2;
+ // t1 = clock();
 
   //linux thing
-  timeval t1, t2 ;
-  gettimeofday(&t1,0);
+  //timeval t1, t2 ;
+  //gettimeofday(&t1,0);
 
   int dpi = config->getDpi();
   int width = config->getWidth();
@@ -252,10 +252,10 @@ int main(int argv, char *argc[]){
   //float diff = ((float) t2 - (float) t1);
 
   //linux thing
-  gettimeofday(&t2,0);
-  float diff = t2.tv_sec - t1.tv_sec;
+  //gettimeofday(&t2,0);
+  //float diff = t2.tv_sec - t1.tv_sec;
 
-  cout << diff << " seconds" << endl;
+  //cout << diff << " seconds" << endl;
 
   return 0;
 }

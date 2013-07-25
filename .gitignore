@@ -3,8 +3,6 @@
 *.com
 *.class
 *.dll
-*.exe
 *.o
 *.so
-scene.bmp
-raytracer
+
