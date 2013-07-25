@@ -3,7 +3,7 @@
 	<date>25-05-2013</date>
 
 	<resolution width="640" height="480" dpi="72"/>
-	<multisampling depth="16" threshold="0.1"/>
+	<multisampling depth="1" threshold="0.1"/>
 
 	<camera>
 		<position x="3.0" y="1.5" z="-4.0"/>
